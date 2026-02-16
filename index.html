@@ -1,0 +1,1427 @@
+<!doctype html>
+<html lang="th">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>โรงเรียนบ้านขัวก่าย – หน้าแรก</title>
+  <meta name="description" content="เว็บไซต์โรงเรียน ดีไซน์ทันสมัย โหลดไว ใช้งานง่าย รองรับมือถือ" />
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet">
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['IBM Plex Sans Thai', 'IBM Plex Sans', 'ui-sans-serif', 'system-ui'] },
+          colors: {
+            brand: { 50: '#eff6ff', 100: '#dbeafe', 200: '#bfdbfe', 300: '#93c5fd', 400: '#60a5fa', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8', 800: '#1e40af', 900: '#1e3a8a' },
+            accent: { 50: '#f0f9ff', 100: '#e0f2fe', 200: '#bae6fd', 300: '#7dd3fc', 400: '#38bdf8', 500: '#0ea5e9' }
+          },
+          boxShadow: { soft: '0 10px 30px rgba(0,0,0,0.08)' }
+        }
+      },
+      darkMode: 'class'
+    }
+  </script>
+  <script>
+    // Initialize dark mode from localStorage
+    if (localStorage.getItem('darkMode') === 'true') {
+      document.documentElement.classList.add('dark');
+    }
+    function toggleDarkMode() {
+      const html = document.documentElement;
+      const isDark = html.classList.toggle('dark');
+      localStorage.setItem('darkMode', isDark);
+      document.getElementById('sunIcon').classList.toggle('hidden', !isDark);
+      document.getElementById('moonIcon').classList.toggle('hidden', isDark);
+    }
+    // Update icons on load
+    document.addEventListener('DOMContentLoaded', () => {
+      const isDark = document.documentElement.classList.contains('dark');
+      document.getElementById('sunIcon').classList.toggle('hidden', !isDark);
+      document.getElementById('moonIcon').classList.toggle('hidden', isDark);
+    });
+  </script>
+  <style>
+    html {
+      scroll-behavior: smooth
+    }
+
+    ::-webkit-scrollbar {
+      width: 10px;
+      height: 10px
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+      border-radius: 999px
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #f1f5f9
+    }
+
+    /* ===== Modern Animations ===== */
+    @keyframes gradient-shift {
+
+      0%,
+      100% {
+        background-position: 0% 50%;
+      }
+
+      50% {
+        background-position: 100% 50%;
+      }
+    }
+
+    @keyframes float {
+
+      0%,
+      100% {
+        transform: translateY(0px);
+      }
+
+      50% {
+        transform: translateY(-10px);
+      }
+    }
+
+    @keyframes pulse-glow {
+
+      0%,
+      100% {
+        box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+      }
+
+      50% {
+        box-shadow: 0 0 40px rgba(59, 130, 246, 0.6);
+      }
+    }
+
+    @keyframes fade-in-up {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes shimmer {
+      0% {
+        background-position: -200% 0;
+      }
+
+      100% {
+        background-position: 200% 0;
+      }
+    }
+
+    /* ===== Glassmorphism ===== */
+    .glass {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .glass-dark {
+      background: rgba(30, 58, 138, 0.9);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    /* ===== Gradient Effects ===== */
+    .gradient-text {
+      background: linear-gradient(135deg, #3b82f6, #8b5cf6, #ec4899);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .animated-gradient {
+      background: linear-gradient(-45deg, #1e40af, #3b82f6, #0ea5e9, #6366f1);
+      background-size: 400% 400%;
+      animation: gradient-shift 8s ease infinite;
+    }
+
+    /* ===== Hover Effects ===== */
+    .card-hover {
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .card-hover:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 25px 50px -12px rgba(59, 130, 246, 0.25);
+    }
+
+    .glow-hover:hover {
+      box-shadow: 0 0 30px rgba(59, 130, 246, 0.4);
+    }
+
+    .nav-link {
+      position: relative;
+      transition: color 0.3s ease;
+    }
+
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+      transition: width 0.3s ease;
+    }
+
+    .nav-link:hover::after {
+      width: 100%;
+    }
+
+    /* ===== Scroll Reveal ===== */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .reveal.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .reveal-left {
+      opacity: 0;
+      transform: translateX(-50px);
+      transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .reveal-left.active {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .reveal-right {
+      opacity: 0;
+      transform: translateX(50px);
+      transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .reveal-right.active {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    /* ===== Floating Animation ===== */
+    .float-animation {
+      animation: float 4s ease-in-out infinite;
+    }
+
+    /* ===== Button Styles ===== */
+    .btn-modern {
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .btn-modern::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      transition: left 0.5s ease;
+    }
+
+    .btn-modern:hover::before {
+      left: 100%;
+    }
+
+    .btn-modern:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3);
+    }
+
+    /* ===== Card Gradient Border ===== */
+    .gradient-border {
+      position: relative;
+      background: white;
+      border-radius: 1rem;
+    }
+
+    .gradient-border::before {
+      content: '';
+      position: absolute;
+      inset: -2px;
+      background: linear-gradient(135deg, #3b82f6, #8b5cf6, #ec4899);
+      border-radius: inherit;
+      z-index: -1;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .gradient-border:hover::before {
+      opacity: 1;
+    }
+
+    /* ===== Wave Divider ===== */
+    .wave-divider {
+      position: relative;
+    }
+
+    .wave-divider::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      width: 100%;
+      height: 60px;
+      background: url("data:image/svg+xml,%3Csvg viewBox='0 0 1440 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='%23ffffff' d='M0,30 C360,60 720,0 1080,30 C1260,45 1350,50 1440,30 L1440,60 L0,60 Z'/%3E%3C/svg%3E") no-repeat center;
+      background-size: cover;
+    }
+
+    /* ===== Shimmer Loading ===== */
+    .shimmer {
+      background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+    }
+
+    /* ===== Image Overlay ===== */
+    .img-overlay {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .img-overlay::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(139, 92, 246, 0.1));
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .img-overlay:hover::after {
+      opacity: 1;
+    }
+
+    .img-overlay img {
+      transition: transform 0.5s ease;
+    }
+
+    .img-overlay:hover img {
+      transform: scale(1.05);
+    }
+
+    /* ===== Banner Slideshow ===== */
+    .banner-slideshow {
+      position: relative;
+      width: 100%;
+      overflow: hidden;
+    }
+
+    .banner-slides {
+      display: flex;
+      transition: transform 0.5s ease-in-out;
+    }
+
+    .banner-slide {
+      min-width: 100%;
+      position: relative;
+    }
+
+    .banner-slide img {
+      width: 100%;
+      height: auto;
+      object-fit: cover;
+    }
+
+    .banner-nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(4px);
+      border: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      z-index: 10;
+    }
+
+    .banner-nav:hover {
+      background: white;
+      transform: translateY(-50%) scale(1.1);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .banner-nav.prev {
+      left: 16px;
+    }
+
+    .banner-nav.next {
+      right: 16px;
+    }
+
+    .banner-indicators {
+      position: absolute;
+      bottom: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 8px;
+      z-index: 10;
+    }
+
+    .banner-indicator {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.5);
+      border: 2px solid white;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .banner-indicator.active {
+      background: white;
+      transform: scale(1.2);
+    }
+
+    .banner-indicator:hover {
+      background: rgba(255, 255, 255, 0.8);
+    }
+
+    @media (max-width: 768px) {
+      .banner-nav {
+        width: 32px;
+        height: 32px;
+      }
+
+      .banner-nav.prev {
+        left: 8px;
+      }
+
+      .banner-nav.next {
+        right: 8px;
+      }
+    }
+  </style>
+
+  <!-- ตั้งค่า URL API ที่นี่ -->
+  <script>
+    // ใส่ URL Apps Script ของครู เช่น:
+    window.EVENTS_URL = "https://script.google.com/macros/s/AKfycbyZ5qi9x1vMUCMpyCf1Qba0s4wGbXmN8lkdp9Pt2jbl1-cX8AAgNNjO85P8P7oprc7K/exec?type=events";
+    window.DONATE_URL = "https://script.google.com/macros/s/AKfycbyZ5qi9x1vMUCMpyCf1Qba0s4wGbXmN8lkdp9Pt2jbl1-cX8AAgNNjO85P8P7oprc7K/exec?type=donate";
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/config.js"></script>
+</head>
+
+<body class="font-sans text-slate-800 bg-slate-50 dark:bg-gray-900 dark:text-slate-200 transition-colors duration-300">
+  <!-- Top Bar -->
+  <div class="bg-brand-700 text-white text-sm">
+    <div class="max-w-7xl mx-auto px-4 py-2 flex items-center justify-between">
+      <p class="hidden md:block">โรงเรียนบ้านขัวก่าย • สพป.สกลนคร เขต 3</p>
+      <div class="flex gap-4">
+        <a href="#map" class="hover:underline">แผนที่</a>
+        <a href="#contact" class="hover:underline">ติดต่อเรา</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Navbar -->
+  <header class="glass sticky top-0 z-50 shadow-lg shadow-brand-500/10">
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="flex items-center justify-between h-16">
+        <a href="#" class="flex items-center gap-3 group">
+          <img src="/img/logo.jpg"
+            class="h-10 w-10 rounded-full ring-2 ring-brand-500/20 group-hover:ring-brand-500/50 transition-all duration-300"
+            alt="ตราเสมา" />
+          <div class="leading-tight">
+            <div class="text-lg font-semibold gradient-text">โรงเรียนบ้านขัวก่าย</div>
+            <div class="text-xs text-slate-500">Ban Khua Kai School</div>
+          </div>
+        </a>
+        <nav class="hidden md:flex items-center gap-6 text-[15px]">
+          <a href="#about" class="nav-link hover:text-brand-700">เกี่ยวกับ</a>
+          <a href="#news" class="nav-link hover:text-brand-700">ข่าว/ประกาศ</a>
+          <a href="#events" class="nav-link hover:text-brand-700">ปฏิทินกิจกรรม</a>
+          <a href="#programs" class="nav-link hover:text-brand-700">หลักสูตร</a>
+          <a href="#gallery" class="nav-link hover:text-brand-700">แกลเลอรี</a>
+          <a href="awards.html" class="nav-link hover:text-brand-700">🏆 ผลงาน</a>
+          <a href="#staff" class="nav-link hover:text-brand-700">บุคลากร</a>
+          <a href="#contact" class="nav-link hover:text-brand-700">ติดต่อ</a>
+          <a href="#donate"
+            class="btn-modern inline-flex items-center gap-1.5 bg-gradient-to-r from-brand-600 to-purple-600 hover:from-brand-700 hover:to-purple-700 text-white px-4 py-2 rounded-full shadow-lg shadow-brand-500/30">🎁
+            ร่วมสนับสนุน</a>
+        </nav>
+        <button id="btnMenu"
+          class="md:hidden inline-flex items-center justify-center p-2 rounded-lg hover:bg-brand-50 transition-colors"
+          aria-label="เมนู">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+      </div>
+    </div>
+    <div id="mobileMenu" class="md:hidden hidden border-t bg-white/95 backdrop-blur">
+      <div class="px-4 py-3 grid gap-2 text-[15px]">
+        <a href="#about" class="py-2 hover:text-brand-700 transition-colors">เกี่ยวกับ</a>
+        <a href="#news" class="py-2 hover:text-brand-700 transition-colors">ข่าว/ประกาศ</a>
+        <a href="#events" class="py-2 hover:text-brand-700 transition-colors">ปฏิทินกิจกรรม</a>
+        <a href="#programs" class="py-2 hover:text-brand-700 transition-colors">หลักสูตร</a>
+        <a href="#gallery" class="py-2 hover:text-brand-700 transition-colors">แกลเลอรี</a>
+        <a href="awards.html" class="py-2 hover:text-brand-700 transition-colors">🏆 ผลงานดีเด่น</a>
+        <a href="#staff" class="py-2 hover:text-brand-700 transition-colors">บุคลากร</a>
+        <a href="#contact" class="py-2 hover:text-brand-700 transition-colors">ติดต่อ</a>
+        <a href="#donate" class="py-2 text-brand-700 font-semibold">🎁 ร่วมสนับสนุน</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="relative overflow-hidden min-h-[70vh] flex items-center">
+    <!-- Animated Gradient Background -->
+    <div class="absolute inset-0 animated-gradient"></div>
+
+    <!-- Decorative Elements -->
+    <div class="absolute top-20 left-10 w-72 h-72 bg-white/5 rounded-full blur-3xl"></div>
+    <div class="absolute bottom-20 right-10 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl"></div>
+    <div class="absolute top-1/3 right-1/4 w-20 h-20 bg-white/10 rounded-full float-animation"></div>
+    <div class="absolute bottom-1/3 left-1/4 w-12 h-12 bg-white/15 rounded-full float-animation"
+      style="animation-delay: 1s;"></div>
+    <div class="absolute top-1/2 right-1/3 w-8 h-8 bg-yellow-300/20 rounded-full float-animation"
+      style="animation-delay: 2s;"></div>
+
+    <!-- Wave Pattern -->
+    <svg class="absolute -bottom-1 left-0 w-full text-slate-50" viewBox="0 0 1440 120" preserveAspectRatio="none">
+      <path fill="currentColor" d="M0,60 C360,120 720,0 1080,60 C1260,90 1350,100 1440,60 L1440,120 L0,120 Z"></path>
+    </svg>
+
+    <div class="relative max-w-7xl mx-auto px-4 py-8 flex items-center text-white">
+      <div class="grid md:grid-cols-[4fr_6fr] gap-6 items-center w-full">
+        <!-- Text Content (left side) -->
+        <div class="reveal-left active">
+          <span
+            class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/20 backdrop-blur text-sm mb-4 border border-white/20">
+            ✨ โรงเรียนคุณภาพของชุมชน
+          </span>
+          <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight">
+            ยินดีต้อนรับสู่
+            <span
+              class="block mt-2 text-transparent bg-clip-text bg-gradient-to-r from-white via-blue-100 to-purple-200">
+              โรงเรียนบ้านขัวก่าย
+            </span>
+          </h1>
+          <p class="mt-4 text-base md:text-lg text-white/90 leading-relaxed">
+            มุ่งพัฒนาผู้เรียนให้มีคุณธรรม นำความรู้ คิดเป็น ทำเป็น อยู่ร่วมกันในสังคมอย่างมีความสุข
+          </p>
+          <div class="mt-6 flex flex-wrap gap-3">
+            <a href="#news"
+              class="btn-modern bg-white text-brand-700 px-5 py-2.5 rounded-xl font-semibold shadow-xl shadow-black/20 hover:shadow-2xl inline-flex items-center gap-2 text-sm">
+              📰 ดูข่าวล่าสุด
+            </a>
+            <a href="#about"
+              class="btn-modern border-2 border-white/50 hover:border-white px-5 py-2.5 rounded-xl font-medium backdrop-blur hover:bg-white/10 inline-flex items-center gap-2 text-sm">
+              🏫 รู้จักโรงเรียน
+            </a>
+          </div>
+        </div>
+
+        <!-- Banner Slideshow (right side - wider column) -->
+        <div class="relative reveal-right active">
+          <div
+            class="relative h-[320px] md:h-[380px] lg:h-[420px] w-full rounded-3xl shadow-2xl overflow-hidden ring-4 ring-white/20 banner-slideshow">
+            <!-- Navigation Arrows -->
+            <button class="banner-nav prev" onclick="prevBanner()">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-700" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+            <button class="banner-nav next" onclick="nextBanner()">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-700" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+
+            <!-- Slides Container -->
+            <div id="bannerSlides" class="banner-slides h-full">
+              <!-- Default image while loading -->
+              <div class="banner-slide">
+                <img src="img/all.jpg" class="w-full h-full object-cover" alt="ภาพบรรยากาศโรงเรียน" />
+              </div>
+            </div>
+
+            <!-- Indicators -->
+            <div id="bannerIndicators" class="banner-indicators">
+            </div>
+          </div>
+
+          <!-- Floating Stats Card -->
+          <div
+            class="absolute -bottom-8 -left-8 glass text-brand-800 rounded-2xl shadow-2xl p-5 w-72 glow-hover"
+            style="animation-delay: 0.5s;">
+            <div class="flex items-center gap-2 mb-3">
+              <span class="text-2xl">📊</span>
+              <span class="font-semibold">สถิติผู้เรียน</span>
+            </div>
+            <div class="grid grid-cols-3 text-center gap-2">
+              <div class="bg-brand-50 rounded-xl p-2">
+                <div class="text-2xl font-bold gradient-text">420</div>
+                <div class="text-xs text-slate-600">นักเรียน</div>
+              </div>
+              <div class="bg-purple-50 rounded-xl p-2">
+                <div class="text-2xl font-bold"
+                  style="background: linear-gradient(135deg, #8b5cf6, #ec4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                  28</div>
+                <div class="text-xs text-slate-600">ครู-บุคลากร</div>
+              </div>
+              <div class="bg-pink-50 rounded-xl p-2">
+                <div class="text-2xl font-bold"
+                  style="background: linear-gradient(135deg, #ec4899, #f97316); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                  12</div>
+                <div class="text-xs text-slate-600">ห้องเรียน</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Announce -->
+  <section class="bg-white border-y -mt-8 relative z-10">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center gap-3">
+      <span class="inline-flex items-center gap-2 text-brand-700 font-semibold">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+          <path
+            d="M13 5.05v13.9c0 .45-.54.66-.85.35l-2.8-2.8H5c-1.1 0-2-.9-2-2V9.5c0-1.1.9-2 2-2h4.35l2.8-2.8c.31-.31.85-.1.85.35z" />
+        </svg>
+        ประกาศโรงเรียน
+      </span>
+      <marquee class="flex-1 text-sm text-slate-600">รับสมัครนักเรียนใหม่ปีการศึกษา 2569 | ขอเชิญผู้ปกครองร่วมงานประชุม
+        10 ก.ย. 2568 | แจ้งย้ายช่องทางสื่อสารไปที่ Facebook Page: โรงเรียนบ้านขัวก่าย</marquee>
+    </div>
+  </section>
+
+  <!-- About -->
+  <section id="about" class="py-20 relative">
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="grid md:grid-cols-2 gap-12 items-center">
+        <div class="reveal">
+          <span class="inline-block px-3 py-1 rounded-full bg-brand-100 text-brand-700 text-sm font-medium mb-4">🌟
+            เกี่ยวกับเรา</span>
+          <h2 class="text-3xl md:text-4xl font-bold">
+            <span class="gradient-text">ปรัชญา วิสัยทัศน์ พันธกิจ</span>
+          </h2>
+          <p class="mt-4 text-slate-600 text-lg leading-relaxed">
+            โรงเรียนบ้านขัวก่ายมุ่งพัฒนาคุณภาพผู้เรียนทั้งด้านความรู้ คุณธรรม จริยธรรม
+            และทักษะชีวิต โดยบูรณาการเทคโนโลยีดิจิทัลและแหล่งเรียนรู้ของชุมชน เพื่อสร้างพลเมืองไทยคุณภาพในศตวรรษที่ 21
+          </p>
+          <ul class="mt-6 grid gap-3 text-slate-700">
+            <li class="flex items-start gap-3 p-3 bg-white rounded-xl shadow-sm border">
+              <span
+                class="flex-shrink-0 w-8 h-8 rounded-full bg-brand-100 flex items-center justify-center text-brand-600">✅</span>
+              <span>จัดการเรียนรู้เน้นผู้เรียนเป็นสำคัญ</span>
+            </li>
+            <li class="flex items-start gap-3 p-3 bg-white rounded-xl shadow-sm border">
+              <span
+                class="flex-shrink-0 w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center text-purple-600">🧠</span>
+              <span>ใช้กระบวนการคิดวิเคราะห์และการแก้ปัญหา</span>
+            </li>
+            <li class="flex items-start gap-3 p-3 bg-white rounded-xl shadow-sm border">
+              <span
+                class="flex-shrink-0 w-8 h-8 rounded-full bg-pink-100 flex items-center justify-center text-pink-600">🤝</span>
+              <span>เชื่อมโยงโรงเรียนกับชุมชนและภาคีเครือข่าย</span>
+            </li>
+          </ul>
+        </div>
+        <div class="grid sm:grid-cols-3 gap-4 reveal">
+          <div class="bg-white rounded-2xl p-5 shadow-lg border card-hover group">
+            <div class="text-3xl font-bold gradient-text group-hover:scale-110 transition-transform">A</div>
+            <div class="text-sm text-slate-500 mt-1">Active Learning</div>
+          </div>
+          <div class="bg-white rounded-2xl p-5 shadow-lg border card-hover group">
+            <div class="text-3xl font-bold text-purple-600 group-hover:scale-110 transition-transform">ICT</div>
+            <div class="text-sm text-slate-500 mt-1">ดิจิทัลเพื่อการเรียนรู้</div>
+          </div>
+          <div class="bg-white rounded-2xl p-5 shadow-lg border card-hover group">
+            <div class="text-3xl font-bold text-pink-600 group-hover:scale-110 transition-transform">CT</div>
+            <div class="text-sm text-slate-500 mt-1">คิดเชิงคำนวณ</div>
+          </div>
+          <div
+            class="bg-gradient-to-br from-brand-500 to-purple-600 rounded-2xl p-5 shadow-lg sm:col-span-2 card-hover text-white">
+            <div class="text-3xl font-bold">🏠 ชุมชน</div>
+            <div class="text-sm text-white/80 mt-1">โรงเรียนของชุมชน</div>
+          </div>
+          <div class="bg-gradient-to-br from-pink-500 to-orange-500 rounded-2xl p-5 shadow-lg card-hover text-white">
+            <div class="text-3xl font-bold">❤️</div>
+            <div class="text-sm text-white/80 mt-1">คนดี-คนเก่ง</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- News -->
+  <section id="news" class="py-20 bg-gradient-to-b from-white to-slate-50">
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="flex items-end justify-between gap-4 reveal">
+        <div>
+          <span class="inline-block px-3 py-1 rounded-full bg-brand-100 text-brand-700 text-sm font-medium mb-2">📰
+            ข่าวสาร</span>
+          <h2 class="text-3xl md:text-4xl font-bold"><span class="gradient-text">ข่าว & ประชาสัมพันธ์</span></h2>
+        </div>
+        <a href="news.html"
+          class="btn-modern px-4 py-2 bg-brand-100 text-brand-700 rounded-full hover:bg-brand-200 font-medium inline-flex items-center gap-2">
+          ดูทั้งหมด →
+        </a>
+      </div>
+      <div id="newsCards" class="mt-8 grid sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+    </div>
+  </section>
+
+  <!-- Events -->
+  <section id="events" class="py-14">
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="flex items-end justify-between gap-4">
+        <h2 class="text-3xl font-bold text-brand-800">ปฏิทินกิจกรรม</h2>
+        <a href="#" class="text-brand-700 hover:underline">ดูปฏิทินทั้งหมด</a>
+      </div>
+      <div class="mt-6 grid lg:grid-cols-3 gap-6">
+        <div class="lg:col-span-2 bg-white rounded-2xl p-6 border shadow-soft">
+          <div id="eventList" class="grid sm:grid-cols-2 gap-4"></div>
+        </div>
+        <aside class="bg-gradient-to-b from-brand-600 to-brand-800 text-white rounded-2xl p-6 shadow-soft">
+          <h3 class="text-xl font-semibold">ดาวน์โหลดเอกสาร</h3>
+          <ul class="mt-3 grid gap-2 text-sm">
+            <li><a href="#" class="underline">ระเบียบการรับสมัครนักเรียน</a></li>
+            <li><a href="#" class="underline">ปฏิทินวิชาการ ภาคเรียนที่ 1/2568</a></li>
+            <li><a href="#" class="underline">แบบฟอร์มขอใช้สถานที่</a></li>
+          </ul>
+          <div class="mt-5 text-xs text-white/80">* สามารถเชื่อมต่อ Google Drive / Google Sheets เพื่ออัปเดตอัตโนมัติ
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <!-- Programs -->
+  <section id="programs" class="py-14 bg-white">
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="text-center mb-10">
+        <h2 class="text-3xl font-bold text-brand-800">หลักสูตรการเรียนการสอน</h2>
+        <p class="mt-2 text-slate-600">มุ่งเน้นพัฒนาผู้เรียนให้มีความรู้ ความสามารถ และคุณธรรม</p>
+      </div>
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="bg-slate-50 rounded-2xl p-6 border hover:shadow-soft transition">
+          <div class="text-4xl mb-4">👶</div>
+          <h3 class="text-xl font-semibold text-brand-800 mb-2">ระดับอนุบาล</h3>
+          <p class="text-sm text-slate-600 mb-4">พัฒนาทักษะพื้นฐาน เรียนรู้ผ่านการเล่น เน้นความพร้อมด้านร่างกาย จิตใจ
+            อารมณ์ และสังคม</p>
+          <ul class="text-sm text-slate-600 space-y-1">
+            <li>• อนุบาล 1-3</li>
+            <li>• อายุ 3-6 ปี</li>
+            <li>• กิจกรรมเสริมทักษะ</li>
+          </ul>
+        </div>
+        <div class="bg-slate-50 rounded-2xl p-6 border hover:shadow-soft transition">
+          <div class="text-4xl mb-4">🎒</div>
+          <h3 class="text-xl font-semibold text-brand-800 mb-2">ระดับประถมศึกษา</h3>
+          <p class="text-sm text-slate-600 mb-4">สร้างรากฐานความรู้ที่แข็งแกร่ง ฝึกทักษะการคิดวิเคราะห์
+            และการทำงานเป็นทีม</p>
+          <ul class="text-sm text-slate-600 space-y-1">
+            <li>• ป.1-ป.6</li>
+            <li>• หลักสูตรแกนกลาง</li>
+            <li>• โครงงาน STEM</li>
+          </ul>
+        </div>
+        <div class="bg-slate-50 rounded-2xl p-6 border hover:shadow-soft transition">
+          <div class="text-4xl mb-4">📚</div>
+          <h3 class="text-xl font-semibold text-brand-800 mb-2">ระดับมัธยมต้น</h3>
+          <p class="text-sm text-slate-600 mb-4">เตรียมความพร้อมสู่การศึกษาขั้นสูง เน้นทักษะแห่งศตวรรษที่ 21
+            และการคิดเชิงคำนวณ</p>
+          <ul class="text-sm text-slate-600 space-y-1">
+            <li>• ม.1-ม.3</li>
+            <li>• วิทยาการคำนวณ</li>
+            <li>• ภาษาต่างประเทศ</li>
+          </ul>
+        </div>
+        <div class="bg-slate-50 rounded-2xl p-6 border hover:shadow-soft transition">
+          <div class="text-4xl mb-4">💻</div>
+          <h3 class="text-xl font-semibold text-brand-800 mb-2">เทคโนโลยีดิจิทัล</h3>
+          <p class="text-sm text-slate-600 mb-4">เรียนรู้การเขียนโปรแกรม Scratch, Python
+            และการใช้งานเทคโนโลยีอย่างสร้างสรรค์</p>
+          <ul class="text-sm text-slate-600 space-y-1">
+            <li>• Scratch Programming</li>
+            <li>• Arduino & Robotics</li>
+            <li>• Digital Literacy</li>
+          </ul>
+        </div>
+        <div class="bg-slate-50 rounded-2xl p-6 border hover:shadow-soft transition">
+          <div class="text-4xl mb-4">🎨</div>
+          <h3 class="text-xl font-semibold text-brand-800 mb-2">กิจกรรมเสริมหลักสูตร</h3>
+          <p class="text-sm text-slate-600 mb-4">ส่งเสริมศักยภาพเฉพาะด้านผ่านกิจกรรมต่างๆ ตามความสนใจและความถนัด</p>
+          <ul class="text-sm text-slate-600 space-y-1">
+            <li>• ดนตรี-นาฏศิลป์</li>
+            <li>• กีฬาและนันทนาการ</li>
+            <li>• ชุมนุมวิชาการ</li>
+          </ul>
+        </div>
+        <div class="bg-slate-50 rounded-2xl p-6 border hover:shadow-soft transition">
+          <div class="text-4xl mb-4">🌱</div>
+          <h3 class="text-xl font-semibold text-brand-800 mb-2">การเรียนรู้ชุมชน</h3>
+          <p class="text-sm text-slate-600 mb-4">เชื่อมโยงการเรียนรู้กับชุมชนท้องถิ่น
+            เรียนรู้จากภูมิปัญญาและแหล่งเรียนรู้ในชุมชน</p>
+          <ul class="text-sm text-slate-600 space-y-1">
+            <li>• ศึกษาแหล่งเรียนรู้</li>
+            <li>• โครงงานชุมชน</li>
+            <li>• งานจิตอาสา</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Gallery -->
+  <section id="gallery" class="py-14">
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="flex items-end justify-between">
+        <h2 class="text-3xl font-bold text-brand-800">แกลเลอรีกิจกรรม</h2>
+        <div class="flex gap-2">
+          <button id="prevBtn" class="px-3 py-1.5 border rounded">ก่อนหน้า</button>
+          <button id="nextBtn" class="px-3 py-1.5 border rounded">ถัดไป</button>
+        </div>
+      </div>
+      <div class="mt-6 overflow-hidden rounded-2xl border">
+        <div id="carousel" class="flex transition-transform duration-500">
+          <img src="https://images.unsplash.com/photo-1524178232363-1fb2b075b655?q=80&w=1600&auto=format&fit=crop"
+            class="w-full shrink-0 object-cover h-72" alt="กิจกรรม 1" />
+          <img src="https://images.unsplash.com/photo-1461532257246-777de18cd58b?q=80&w=1600&auto=format&fit=crop"
+            class="w-full shrink-0 object-cover h-72" alt="กิจกรรม 2" />
+          <img src="https://images.unsplash.com/photo-1516383607781-913a19294fd1?q=80&w=1600&auto=format&fit=crop"
+            class="w-full shrink-0 object-cover h-72" alt="กิจกรรม 3" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Staff -->
+  <section id="staff" class="py-14 bg-white">
+    <div class="max-w-7xl mx-auto px-4">
+      <h2 class="text-3xl font-bold text-brand-800 mb-8">ผู้บริหาร & คณะครู</h2>
+
+      <!-- Container for all staff groups -->
+      <div id="staffContainer" class="grid md:grid-cols-2 gap-4">
+        <!-- Content loaded by JavaScript -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Donate -->
+  <section id="donate" class="py-14">
+    <div class="max-w-7xl mx-auto px-4">
+      <div
+        class="grid md:grid-cols-2 gap-8 items-center bg-gradient-to-r from-accent-500 to-brand-600 rounded-2xl text-white p-8 shadow-soft">
+        <div>
+          <h2 class="text-3xl font-bold">ร่วมสนับสนุนการศึกษา</h2>
+          <p class="mt-2 text-white/90">สมทบทุนโครงการโดมอเนกประสงค์ อุปกรณ์การเรียน และทุนการศึกษา
+            เพื่ออนาคตของลูกหลานในชุมชน</p>
+          <ul class="mt-4 grid gap-1 text-sm text-white/90">
+            <li>• สแกน QR พร้อมเพย์ โรงเรียนบ้านขัวก่าย</li>
+            <li>• ระบุโครงการ/รุ่น/สาย ได้ในการโอน</li>
+          </ul>
+          <div class="mt-5 flex gap-3">
+            <a href="donate.html" class="bg-white text-brand-700 px-4 py-2 rounded-xl font-medium">ดูยอดบริจาค</a>
+            <a href="donate.html" class="border border-white/70 px-4 py-2 rounded-xl font-medium">วิธีการบริจาค</a>
+          </div>
+        </div>
+        <div class="bg-white text-brand-800 rounded-xl p-5">
+          <div class="text-sm">ยอดบริจาคสะสม</div>
+          <div id="donateTotal" class="text-4xl font-bold mt-1">฿ 235,420</div>
+          <div class="mt-3 grid grid-cols-3 gap-3 text-center">
+            <div class="bg-slate-50 rounded-lg p-3">
+              <div id="donors" class="text-lg font-bold">120</div>
+              <div class="text-xs text-slate-500">ผู้ร่วมบริจาค</div>
+            </div>
+            <div class="bg-slate-50 rounded-lg p-3">
+              <div id="progress" class="text-lg font-bold">65%</div>
+              <div class="text-xs text-slate-500">ความคืบหน้า</div>
+            </div>
+            <div class="bg-slate-50 rounded-lg p-3">
+              <div id="batch" class="text-lg font-bold">รุ่น 1–8</div>
+              <div class="text-xs text-slate-500">แยกรุ่น/สาย</div>
+            </div>
+          </div>
+          <div class="mt-4 text-xs text-slate-500">* สามารถเชื่อม Google Sheets เพื่ออัปเดตตัวเลขแบบเรียลไทม์</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section id="contact" class="py-14 bg-white">
+    <div class="max-w-7xl mx-auto px-4">
+      <h2 class="text-3xl font-bold text-brand-800">ติดต่อโรงเรียน</h2>
+      <div class="mt-6 grid md:grid-cols-2 gap-6">
+        <form class="bg-slate-50 rounded-2xl p-6 border grid gap-4" onsubmit="return false;">
+          <div><label class="text-sm text-slate-500">ชื่อ-สกุล</label><input
+              class="mt-1 w-full px-3 py-2 rounded-lg border outline-none focus:ring-2 focus:ring-brand-300"
+              placeholder="ระบุชื่อของคุณ" /></div>
+          <div><label class="text-sm text-slate-500">อีเมล</label><input type="email"
+              class="mt-1 w-full px-3 py-2 rounded-lg border outline-none focus:ring-2 focus:ring-brand-300"
+              placeholder="example@school.ac.th" /></div>
+          <div><label class="text-sm text-slate-500">เรื่อง</label><input
+              class="mt-1 w-full px-3 py-2 rounded-lg border outline-none focus:ring-2 focus:ring-brand-300"
+              placeholder="หัวข้อ" /></div>
+          <div><label class="text-sm text-slate-500">ข้อความ</label><textarea rows="4"
+              class="mt-1 w-full px-3 py-2 rounded-lg border outline-none focus:ring-2 focus:ring-brand-300"
+              placeholder="พิมพ์ข้อความของคุณ"></textarea></div>
+          <button type="button" id="contactSubmit"
+            class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2 rounded-xl">ส่งข้อความ</button>
+        </form>
+        <div class="bg-slate-50 rounded-2xl p-6 border">
+          <div class="grid gap-3 text-sm">
+            <div><span class="font-semibold">ที่อยู่:</span> ต.ขัวก่าย อ.บ้านผือ จ.สกลนคร 47xxx</div>
+            <div><span class="font-semibold">โทร:</span> 042-xxx-xxx</div>
+            <div><span class="font-semibold">อีเมล:</span> info@bankhuakai.ac.th</div>
+            <div><span class="font-semibold">Facebook:</span> โรงเรียนบ้านขัวก่าย</div>
+          </div>
+          <div id="map" class="mt-4 aspect-[16/9] rounded-xl overflow-hidden border">
+            <iframe title="แผนที่โรงเรียน" src="https://www.google.com/maps?q=Sakon+Nakhon&output=embed"
+              class="w-full h-full"></iframe>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-brand-900 text-white">
+    <div class="max-w-7xl mx-auto px-4 py-10 grid md:grid-cols-4 gap-8">
+      <div>
+        <div class="flex items-center gap-3">
+          <img
+            src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Emblem_of_the_Ministry_of_Education_of_Thailand.svg/120px-Emblem_of_the_Ministry_of_Education_of_Thailand.svg.png"
+            class="h-10 w-10" alt="ตราเสมา" />
+          <div>
+            <div class="font-semibold">โรงเรียนบ้านขัวก่าย</div>
+            <div class="text-xs text-white/80">สพป.สกลนคร เขต 3</div>
+          </div>
+        </div>
+        <p class="mt-3 text-sm text-white/80">เว็บไซต์นี้เป็นต้นแบบ (Template) สามารถปรับแก้สี โลโก้ เนื้อหา และเชื่อม
+          Google Sheets/Drive เพื่ออัปเดตข้อมูลอัตโนมัติ</p>
+      </div>
+      <div>
+        <div class="font-semibold mb-3">เมนู</div>
+        <ul class="grid gap-2 text-sm text-white/80">
+          <li><a href="#about" class="hover:underline">เกี่ยวกับ</a></li>
+          <li><a href="#news" class="hover:underline">ข่าว/ประกาศ</a></li>
+          <li><a href="#events" class="hover:underline">กิจกรรม</a></li>
+          <li><a href="#contact" class="hover:underline">ติดต่อ</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="font-semibold mb-3">ลิงก์ที่เกี่ยวข้อง</div>
+        <ul class="grid gap-2 text-sm text-white/80">
+          <li><a href="#" class="hover:underline">OBEC</a></li>
+          <li><a href="#" class="hover:underline">สพป.สกลนคร เขต 3</a></li>
+          <li><a href="#" class="hover:underline">ตารางเรียน</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="font-semibold mb-3">ติดต่อ</div>
+        <div class="text-sm text-white/80">info@bankhuakai.ac.th</div>
+        <div class="text-sm text-white/80">© <span id="year"></span> Ban Khua Kai School</div>
+      </div>
+    </div>
+  </footer>
+
+  <script type="module">
+    // Mobile menu
+    document.getElementById('btnMenu')?.addEventListener('click', () => {
+      document.getElementById('mobileMenu').classList.toggle('hidden');
+    });
+
+    // Carousel
+    const carousel = document.getElementById('carousel');
+    if (carousel) {
+      const slides = carousel.children.length;
+      let index = 0;
+      const update = () => carousel.style.transform = `translateX(-${index * 100}%)`;
+      document.getElementById('prevBtn')?.addEventListener('click', () => { index = (index - 1 + slides) % slides; update(); });
+      document.getElementById('nextBtn')?.addEventListener('click', () => { index = (index + 1) % slides; update(); });
+    }
+
+    // Year
+    const yearEl = document.getElementById('year');
+    if (yearEl) yearEl.textContent = new Date().getFullYear();
+
+    // Contact form
+    const contactSubmit = document.getElementById('contactSubmit');
+    if (contactSubmit) {
+      contactSubmit.addEventListener('click', function () {
+        const form = this.closest('form');
+        const inputs = form.querySelectorAll('input, textarea');
+        let filled = true;
+        inputs.forEach(input => {
+          if (!input.value.trim()) filled = false;
+        });
+        if (filled) {
+          alert('ขอบคุณสำหรับข้อความของคุณ เราจะติดต่อกลับโดยเร็วที่สุด');
+          inputs.forEach(input => input.value = '');
+        } else {
+          alert('กรุณากรอกข้อมูลให้ครบถ้วน');
+        }
+      });
+    }
+
+    // --------- Announcement Popup ---------
+    window.closeAnnouncement = () => {
+      document.getElementById('announcementPopup').classList.add('hidden');
+      document.getElementById('announcementPopup').classList.remove('flex');
+      sessionStorage.setItem('popupClosed', 'true');
+    };
+
+    // Show popup after 1 second if not closed in this session
+    setTimeout(() => {
+      if (!sessionStorage.getItem('popupClosed')) {
+        const popup = document.getElementById('announcementPopup');
+        popup.classList.remove('hidden');
+        popup.classList.add('flex');
+      }
+    }, 1000);
+
+    // --------- Gallery Rendering ---------
+    function renderGallery(list) {
+      const grid = document.getElementById('galleryGrid');
+      if (!grid) return;
+      grid.innerHTML = '';
+      list.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'group relative aspect-square rounded-xl overflow-hidden cursor-pointer';
+        div.innerHTML = `
+          <img src="${item.image_url}" alt="${item.title || ''}" 
+               class="w-full h-full object-cover group-hover:scale-110 transition duration-300"
+               loading="lazy">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition flex items-end p-3">
+            <span class="text-white text-sm font-medium">${item.title || ''}</span>
+          </div>
+        `;
+        grid.appendChild(div);
+      });
+    }
+
+    // --------- Banner Slideshow ----------
+    let bannerIndex = 0;
+    let bannerInterval = null;
+    let bannerCount = 0;
+
+    const fallbackBanners = [
+      { title: 'รับสมัครนักเรียนใหม่ 2569', image_url: 'https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=1200&h=400&fit=crop', link_url: '#' },
+      { title: 'กิจกรรมวันวิทยาศาสตร์', image_url: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=1200&h=400&fit=crop', link_url: '#' },
+      { title: 'การแข่งขันกีฬาสีภายใน', image_url: 'https://images.unsplash.com/photo-1571902943202-507ec2618e8f?w=1200&h=400&fit=crop', link_url: '#' },
+    ];
+
+    function renderBanners(banners) {
+      const slidesContainer = document.getElementById('bannerSlides');
+      const indicatorsContainer = document.getElementById('bannerIndicators');
+
+      if (!slidesContainer || !banners || banners.length === 0) {
+        return; // Keep default image
+      }
+
+      bannerCount = banners.length;
+
+      // Create slides - maintain same aspect as hero image
+      slidesContainer.innerHTML = banners.map((b, i) => `
+        <div class="banner-slide">
+          <a href="${b.link_url || '#'}" ${b.link_url && b.link_url !== '#' ? 'target="_blank"' : ''} class="block h-full">
+            <img src="${b.image_url}" alt="${b.title || 'Banner'}" class="w-full h-full object-cover" style="object-position: ${b.image_position || 'center'}">
+          </a>
+        </div>
+      `).join('');
+
+      // Create indicators
+      if (indicatorsContainer && banners.length > 1) {
+        indicatorsContainer.innerHTML = banners.map((_, i) => `
+          <button class="banner-indicator ${i === 0 ? 'active' : ''}" onclick="goToBanner(${i})"></button>
+        `).join('');
+      }
+
+      // Start auto-play only if more than 1 banner
+      if (banners.length > 1) {
+        startBannerAutoPlay();
+      }
+    }
+
+    function updateBannerSlide() {
+      const slidesContainer = document.getElementById('bannerSlides');
+      const indicators = document.querySelectorAll('.banner-indicator');
+
+      if (slidesContainer) {
+        slidesContainer.style.transform = `translateX(-${bannerIndex * 100}%)`;
+      }
+
+      indicators.forEach((ind, i) => {
+        ind.classList.toggle('active', i === bannerIndex);
+      });
+    }
+
+    function nextBanner() {
+      bannerIndex = (bannerIndex + 1) % bannerCount;
+      updateBannerSlide();
+      resetBannerAutoPlay();
+    }
+
+    function prevBanner() {
+      bannerIndex = (bannerIndex - 1 + bannerCount) % bannerCount;
+      updateBannerSlide();
+      resetBannerAutoPlay();
+    }
+
+    function goToBanner(index) {
+      bannerIndex = index;
+      updateBannerSlide();
+      resetBannerAutoPlay();
+    }
+
+    function startBannerAutoPlay() {
+      if (bannerInterval) clearInterval(bannerInterval);
+      bannerInterval = setInterval(() => {
+        bannerIndex = (bannerIndex + 1) % bannerCount;
+        updateBannerSlide();
+      }, 5000); // เลื่อนทุก 5 วินาที
+    }
+
+    function resetBannerAutoPlay() {
+      if (bannerInterval) clearInterval(bannerInterval);
+      startBannerAutoPlay();
+    }
+
+    // --------- Dynamic data (API + Fallback) ----------
+    const fallbackNews = [
+      { id: 1, date: 'ประกาศ • 20 ส.ค. 2568', title: 'กำหนดการกิจกรรมวันวิทยาศาสตร์', desc: 'เชิญชวนนักเรียนทุกระดับชั้นเข้าร่วมกิจกรรมฐานการเรียนรู้ วิทยาศาสตร์น่ารู้ และการประกวดสิ่งประดิษฐ์', tag: 'กิจกรรม', cover: 'https://images.unsplash.com/photo-1606326608690-4c3889a3ad71?q=80&w=1600&auto=format&fit=crop' },
+      { id: 2, date: 'ข่าว • 10 ส.ค. 2568', title: 'รับสมัครนักเรียนใหม่ ปีการศึกษา 2569', desc: 'เปิดรับสมัครระดับชั้นอนุบาล 1 – มัธยมศึกษาตอนต้น รายละเอียดและเอกสารที่ต้องเตรียมคลิกอ่าน', tag: 'รับสมัคร', cover: 'https://images.unsplash.com/photo-1551836022-d5d88e9218df?q=80&w=1600&auto=format&fit=crop' },
+      { id: 3, date: 'ข่าว • 05 ส.ค. 2568', title: 'อบรมเชิงปฏิบัติการ Scratch & Arduino', desc: 'เสริมทักษะเขียนโปรแกรม คิดเชิงคำนวณ และหุ่นยนต์ สำหรับครูและนักเรียนแกนนำ', tag: 'พัฒนา', cover: 'https://images.unsplash.com/photo-1510936111840-65e151ad71bb?q=80&w=1600&auto=format&fit=crop' },
+    ];
+
+    const fallbackEvents = [
+      { day: '13', month: 'ก.ย. 68', title: 'ประชุมผู้ปกครอง ภาคเรียนที่ 1', place: 'หอประชุมโรงเรียน • 09:00–12:00 น.' },
+      { day: '20', month: 'ก.ย. 68', title: 'การแข่งขันกีฬา E-Sport ภายใน', place: 'อาคารอเนกประสงค์ • 13:00–16:00 น.' },
+      { day: '28', month: 'ก.ย. 68', title: 'นิทรรศการวันวิทยาศาสตร์', place: 'ลานกิจกรรม • ตลอดวัน' },
+      { day: '05', month: 'ต.ค. 68', title: 'อบรมเชิงปฏิบัติการโค้ดดิ้ง', place: 'ห้องคอมพิวเตอร์ • 09:00–15:30 น.' },
+    ];
+
+    async function fetchJSON(url) {
+      const r = await fetch(url, { cache: 'no-store' });
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.json();
+    }
+
+    function renderEvents(list) {
+      const wrap = document.getElementById('eventList');
+      if (!wrap) return;
+      wrap.innerHTML = '';
+      list.forEach(e => {
+        const el = document.createElement('div');
+        el.className = 'flex items-start gap-3 p-4 rounded-xl border';
+        el.innerHTML = `
+                <div class="text-center">
+                    <div class="text-2xl font-bold text-brand-700">${e.d || e.day}</div>
+                    <div class="text-xs text-slate-500">${e.m || e.month}</div>
+                </div>
+                <div>
+                    <div class="font-semibold">${e.title}</div>
+                    <div class="text-sm text-slate-500">${e.place || ''}</div>
+                </div>`;
+        wrap.appendChild(el);
+      });
+    }
+
+    function renderDonate(obj) {
+      if (!obj) return;
+      const fmt = v => String(v).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+      if (document.getElementById('donateTotal')) document.getElementById('donateTotal').textContent = '฿ ' + fmt(obj.total || 235420);
+      if (document.getElementById('donors')) document.getElementById('donors').textContent = obj.donors || '120';
+      if (document.getElementById('progress')) document.getElementById('progress').textContent = obj.progress || '65%';
+      if (document.getElementById('batch')) document.getElementById('batch').textContent = obj.batch || 'รุ่น 1–8';
+    }
+
+    function renderNews(list) {
+      const wrap = document.getElementById('newsCards');
+      if (!wrap) return;
+      wrap.innerHTML = '';
+      list.forEach((n, i) => {
+        const item = {
+          id: n.id || (i + 1),
+          title: n.title,
+          cover: n.cover_image || n.cover || 'https://via.placeholder.com/800x400',
+          coverPosition: n.cover_position || 'center',
+          date: n.event_date || n.date || '',
+          desc: n.description || n.desc || '',
+          tag: n.tag || '',
+          slug: n.slug || ''
+        };
+
+        // Use slug if available for nicer URLs
+        const url = item.id ? `news.html?id=${item.id}` : `news.html?slug=${encodeURIComponent(item.slug)}`;
+
+        const el = document.createElement('article');
+        el.className = 'bg-white rounded-2xl overflow-hidden border shadow-sm card-hover reveal group';
+        el.innerHTML = `
+                <div class="img-overlay h-48">
+                    <img src="${item.cover}" class="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500" style="object-position: ${item.coverPosition}" alt="${item.title}">
+                </div>
+                <div class="p-5">
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="text-xs text-slate-500">📅 ${item.date}</span>
+                        <span class="text-xs px-2 py-0.5 bg-brand-100 text-brand-700 rounded-full">${item.tag}</span>
+                    </div>
+                    <h3 class="font-semibold text-slate-800 group-hover:text-brand-700 transition-colors line-clamp-2">${item.title}</h3>
+                    <p class="mt-2 text-sm text-slate-600 line-clamp-2">${item.desc}</p>
+                    <a href="${url}" class="mt-4 inline-flex items-center gap-1 text-brand-700 text-sm font-medium hover:gap-2 transition-all">
+                        อ่านต่อ <span>→</span>
+                    </a>
+                </div>`;
+        wrap.appendChild(el);
+      });
+    }
+
+    // Init
+    (async () => {
+      // 0. Load Banners from Supabase
+      try {
+        const { data: bannersList, error: bannersError } = await supabase
+          .from('banners')
+          .select('*')
+          .eq('is_active', true)
+          .order('sort_order', { ascending: true });
+
+        if (bannersError) throw bannersError;
+
+        if (bannersList && bannersList.length > 0) {
+          renderBanners(bannersList);
+        } else {
+          renderBanners(fallbackBanners);
+        }
+      } catch (e) {
+        console.warn('Banners Error (using fallback):', e);
+        renderBanners(fallbackBanners);
+      }
+
+      // 1. News from API
+      try {
+        const { data: list, error } = await supabase
+          .from('news')
+          .select('*')
+          .order('created_at', { ascending: false })
+          .limit(3);
+
+        if (error) throw error;
+
+        if (list && list.length > 0) {
+          renderNews(list);
+        } else {
+          renderNews(fallbackNews);
+        }
+      } catch (e) {
+        console.warn('Supabase News Error (using fallback):', e);
+        renderNews(fallbackNews);
+      }
+
+      // 2. Events from Supabase
+      try {
+        const { data: eventsList, error: eventsError } = await supabase
+          .from('events')
+          .select('*')
+          .order('created_at', { ascending: true })
+          .limit(6);
+
+        if (eventsError) throw eventsError;
+
+        if (eventsList && eventsList.length > 0) {
+          renderEvents(eventsList);
+        } else {
+          renderEvents(fallbackEvents);
+        }
+      } catch (e) {
+        console.warn('Events Error (using fallback):', e);
+        renderEvents(fallbackEvents);
+      }
+
+      // 3. Donate (Keep existing logic)
+      try {
+        if (window.DONATE_URL) {
+          const data = await fetchJSON(window.DONATE_URL);
+          renderDonate((data.donate || [])[0]);
+        }
+      } catch (e) {
+        console.warn('Donate Data Error:', e);
+      }
+
+      // 4. Staff from Supabase (loads in parallel with above)
+      function optimizeCloudinaryUrl(url) {
+        // If it's a Cloudinary URL, add transformations for faster loading
+        if (url && url.includes('cloudinary.com')) {
+          // Add auto-format, auto-quality, and resize to 200x200
+          return url.replace('/upload/', '/upload/f_auto,q_auto,w_200,h_200,c_fill/');
+        }
+        return url;
+      }
+
+      // Staff category labels and grouping
+      const categoryLabels = {
+        'executive': { title: '👔 ผู้บริหาร', bgColor: 'bg-brand-100', textColor: 'text-brand-800' },
+        'kindergarten': { title: '🎒 ครูอนุบาล', bgColor: 'bg-pink-100', textColor: 'text-pink-800' },
+        'p1-p3': { title: '📚 ครู ป.1-ป.3', bgColor: 'bg-green-100', textColor: 'text-green-800' },
+        'p4-p6': { title: '📖 ครู ป.4-ป.6', bgColor: 'bg-blue-100', textColor: 'text-blue-800' },
+        'm1-m3': { title: '📘 ครู ม.1-ม.3', bgColor: 'bg-purple-100', textColor: 'text-purple-800' },
+        'other': { title: '👩‍🏫 บุคลากรอื่นๆ', bgColor: 'bg-slate-100', textColor: 'text-slate-800' }
+      };
+      const categoryOrder = ['executive', 'kindergarten', 'p1-p3', 'p4-p6', 'm1-m3', 'other'];
+
+      // Map individual grades to groups and badge labels
+      const gradeMapping = {
+        'executive': { group: 'executive', badge: '' },
+        'kindergarten': { group: 'kindergarten', badge: 'อนุบาล' },
+        'p1': { group: 'p1-p3', badge: 'ป.1' },
+        'p2': { group: 'p1-p3', badge: 'ป.2' },
+        'p3': { group: 'p1-p3', badge: 'ป.3' },
+        'p4': { group: 'p4-p6', badge: 'ป.4' },
+        'p5': { group: 'p4-p6', badge: 'ป.5' },
+        'p6': { group: 'p4-p6', badge: 'ป.6' },
+        'm1': { group: 'm1-m3', badge: 'ม.1' },
+        'm2': { group: 'm1-m3', badge: 'ม.2' },
+        'm3': { group: 'm1-m3', badge: 'ม.3' },
+        'other': { group: 'other', badge: '' }
+      };
+
+      function renderStaff(list) {
+        const container = document.getElementById('staffContainer');
+        if (!container) return;
+        container.innerHTML = '';
+
+        if (!list || list.length === 0) {
+          container.innerHTML = '<p class="text-center text-slate-500 py-8">ยังไม่มีข้อมูลบุคลากร</p>';
+          return;
+        }
+
+        // Group staff by display group (not individual grades)
+        const grouped = {};
+        list.forEach(s => {
+          const cat = s.category || 'other';
+          const mapping = gradeMapping[cat] || gradeMapping['other'];
+          const groupKey = mapping.group;
+
+          if (!grouped[groupKey]) grouped[groupKey] = [];
+          grouped[groupKey].push({ ...s, badge: mapping.badge });
+        });
+
+        // Render each category in order
+        categoryOrder.forEach(cat => {
+          if (!grouped[cat] || grouped[cat].length === 0) return;
+
+          const catInfo = categoryLabels[cat] || categoryLabels['other'];
+
+          const section = document.createElement('div');
+          section.className = 'staff-category bg-slate-50 rounded-2xl border p-4';
+          section.innerHTML = `
+            <h3 class="inline-block px-4 py-2 rounded-full ${catInfo.bgColor} ${catInfo.textColor} font-semibold mb-3">
+              ${catInfo.title}
+            </h3>
+            <div class="grid gap-3 staff-grid"></div>
+          `;
+
+          const grid = section.querySelector('.staff-grid');
+          grouped[cat].forEach(s => {
+            const photoUrl = optimizeCloudinaryUrl(s.photo_url) || 'https://via.placeholder.com/200?text=No+Photo';
+            const badgeHtml = s.badge ? `<span class="inline-block px-2 py-0.5 rounded-full bg-white text-xs font-medium border ml-2">${s.badge}</span>` : '';
+            const div = document.createElement('div');
+            div.className = 'flex items-center gap-4 bg-white rounded-xl p-3 shadow-sm hover:shadow-md transition';
+            div.innerHTML = `
+              <img class="h-48 w-48 rounded-full object-cover bg-slate-200 flex-shrink-0 border-4 border-white shadow-lg" 
+                   src="${photoUrl}" 
+                   alt="${s.name}" 
+                   loading="eager"
+                   onerror="this.src='https://via.placeholder.com/200?text=No+Photo'">
+              <div class="min-w-0 flex-1">
+                <div class="font-bold text-lg text-brand-800">${s.name}</div>
+                <div class="text-sm text-slate-600 mt-1">${s.position || ''}${badgeHtml}</div>
+              </div>
+            `;
+            grid.appendChild(div);
+          });
+
+          container.appendChild(section);
+        });
+      }
+
+      // Load staff immediately (parallel with news)
+      supabase.from('staff').select('*').order('sort_order', { ascending: true })
+        .then(({ data: staffList, error: staffError }) => {
+          if (staffError) throw staffError;
+          renderStaff(staffList);
+        })
+        .catch(e => {
+          console.warn('Staff Error:', e);
+          const container = document.getElementById('staffContainer');
+          if (container) container.innerHTML = '<p class="text-center text-red-500 py-8">เกิดข้อผิดพลาดในการโหลดข้อมูล</p>';
+        });
+    })();
+  </script>
+
+  <!-- Scroll Reveal Animation -->
+  <script>
+    // Intersection Observer for scroll reveal animations
+    const revealElements = document.querySelectorAll('.reveal, .reveal-left, .reveal-right');
+
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('active');
+        }
+      });
+    }, {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    });
+
+    revealElements.forEach(el => revealObserver.observe(el));
+
+    // Add reveal class to dynamically created elements
+    const originalAppendChild = HTMLElement.prototype.appendChild;
+    HTMLElement.prototype.appendChild = function (child) {
+      const result = originalAppendChild.call(this, child);
+      if (child.classList && child.classList.contains('reveal')) {
+        setTimeout(() => revealObserver.observe(child), 50);
+      }
+      return result;
+    };
+  </script>
+</body>
+
+</html>

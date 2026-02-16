@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="th">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ร่วมสนับสนุนการศึกษา – โรงเรียนบ้านขัวก่าย</title>
+    <meta name="description" content="ร่วมบริจาคสนับสนุนการศึกษาโรงเรียนบ้านขัวก่าย" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['IBM Plex Sans Thai', 'IBM Plex Sans', 'ui-sans-serif', 'system-ui'] },
+                    colors: {
+                        brand: { 50: '#eff6ff', 100: '#dbeafe', 200: '#bfdbfe', 300: '#93c5fd', 400: '#60a5fa', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8', 800: '#1e40af', 900: '#1e3a8a' },
+                        accent: { 50: '#f0f9ff', 100: '#e0f2fe', 200: '#bae6fd', 300: '#7dd3fc', 400: '#38bdf8', 500: '#0ea5e9' }
+                    },
+                    boxShadow: { soft: '0 10px 30px rgba(0,0,0,0.08)' }
+                }
+            }
+        }
+    </script>
+    <style>
+        html {
+            scroll-behavior: smooth
+        }
+
+        .animate-pulse-slow {
+            animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/config.js"></script>
+</head>
+
+<body class="font-sans text-slate-800 bg-slate-50">
+    <!-- Header -->
+    <header class="bg-white/90 backdrop-blur sticky top-0 z-50 shadow">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="flex items-center justify-between h-16">
+                <a href="index.html" class="flex items-center gap-3">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Emblem_of_the_Ministry_of_Education_of_Thailand.svg/120px-Emblem_of_the_Ministry_of_Education_of_Thailand.svg.png"
+                        class="h-9 w-9" alt="ตราเสมา" />
+                    <div class="leading-tight">
+                        <div class="text-base font-semibold text-brand-800">โรงเรียนบ้านขัวก่าย</div>
+                        <div class="text-[11px] text-slate-500">Ban Khua Kai School</div>
+                    </div>
+                </a>
+                <nav class="hidden md:flex items-center gap-6 text-[15px]">
+                    <a href="index.html" class="hover:text-brand-700">หน้าหลัก</a>
+                    <a href="index.html#news" class="hover:text-brand-700">ข่าว</a>
+                    <a href="index.html#contact" class="hover:text-brand-700">ติดต่อ</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="relative bg-gradient-to-br from-brand-600 via-brand-700 to-accent-500 text-white py-16">
+        <div
+            class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80&w=1600')] bg-cover bg-center opacity-10">
+        </div>
+        <div class="relative max-w-4xl mx-auto px-4 text-center">
+            <span class="inline-block px-4 py-1.5 rounded-full bg-white/20 text-sm mb-4">💖 ร่วมเป็นส่วนหนึ่ง</span>
+            <h1 class="text-4xl md:text-5xl font-bold">ร่วมสนับสนุนการศึกษา</h1>
+            <p class="mt-4 text-lg text-white/90 max-w-2xl mx-auto">
+                สมทบทุนโครงการโดมอเนกประสงค์ อุปกรณ์การเรียน และทุนการศึกษา เพื่ออนาคตของลูกหลานในชุมชน
+            </p>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="max-w-5xl mx-auto px-4 py-12">
+        <div class="grid lg:grid-cols-2 gap-10">
+
+            <!-- QR Code Section -->
+            <div class="bg-white rounded-2xl shadow-soft p-8 text-center">
+                <h2 class="text-2xl font-bold text-brand-800 mb-4">สแกน QR Code เพื่อบริจาค</h2>
+
+                <!-- QR Code Placeholder - Replace with actual QR -->
+                <div id="qrCodeContainer"
+                    class="mx-auto w-64 h-64 bg-slate-100 rounded-xl flex items-center justify-center border-2 border-dashed border-slate-300 overflow-hidden">
+                    <img id="qrCodeImage" src="" alt="QR Code พร้อมเพย์" class="w-full h-full object-contain hidden">
+                    <div id="qrPlaceholder" class="text-center text-slate-400">
+                        <svg class="w-16 h-16 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
+                        </svg>
+                        <p class="text-sm">QR Code จะแสดงที่นี่</p>
+                    </div>
+                </div>
+
+                <div class="mt-6 text-left bg-slate-50 rounded-xl p-4">
+                    <h3 class="font-semibold text-brand-800 mb-2">📋 วิธีการบริจาค</h3>
+                    <ol class="text-sm text-slate-600 space-y-2">
+                        <li>1. สแกน QR Code ด้านบนด้วยแอปธนาคาร</li>
+                        <li>2. ใส่จำนวนเงินที่ต้องการบริจาค</li>
+                        <li>3. ระบุชื่อ-รุ่น/สาย ในช่องหมายเหตุ (ถ้ามี)</li>
+                        <li>4. ยืนยันการโอนเงิน</li>
+                    </ol>
+                </div>
+
+                <div class="mt-4 p-4 bg-brand-50 rounded-xl">
+                    <p class="text-sm text-brand-800">
+                        <strong>ชื่อบัญชี:</strong> <span id="accountName">โรงเรียนบ้านขัวก่าย</span><br>
+                        <strong>เลขบัญชี:</strong> <span id="accountNumber">xxx-x-xxxxx-x</span><br>
+                        <strong>ธนาคาร:</strong> <span id="bankName">กรุงไทย</span>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Donation Stats Section -->
+            <div class="space-y-6">
+                <!-- Total Amount Card -->
+                <div class="bg-gradient-to-br from-brand-600 to-brand-800 text-white rounded-2xl shadow-soft p-8">
+                    <div class="text-sm opacity-90">ยอดบริจาคสะสมปัจจุบัน</div>
+                    <div id="totalAmount" class="text-5xl font-bold mt-2 animate-pulse-slow">฿ 0</div>
+
+                    <!-- Progress Bar -->
+                    <div class="mt-6">
+                        <div class="flex justify-between text-sm mb-2">
+                            <span>ความคืบหน้า</span>
+                            <span id="progressPercent">0%</span>
+                        </div>
+                        <div class="h-3 bg-white/30 rounded-full overflow-hidden">
+                            <div id="progressBar" class="h-full bg-white rounded-full transition-all duration-1000"
+                                style="width: 0%"></div>
+                        </div>
+                        <div class="flex justify-between text-xs mt-1 opacity-80">
+                            <span>฿ 0</span>
+                            <span>เป้าหมาย: <span id="goalAmount">฿ 500,000</span></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-white rounded-xl shadow-soft p-5 text-center">
+                        <div id="donorCount" class="text-3xl font-bold text-brand-700">0</div>
+                        <div class="text-sm text-slate-500 mt-1">ผู้ร่วมบริจาค</div>
+                    </div>
+                    <div class="bg-white rounded-xl shadow-soft p-5 text-center">
+                        <div id="projectName" class="text-lg font-bold text-brand-700">โดมอเนกประสงค์</div>
+                        <div class="text-sm text-slate-500 mt-1">โครงการปัจจุบัน</div>
+                    </div>
+                </div>
+
+                <!-- Recent Donors -->
+                <div class="bg-white rounded-2xl shadow-soft p-6">
+                    <h3 class="font-semibold text-brand-800 mb-4">🙏 ผู้บริจาคล่าสุด</h3>
+                    <div id="recentDonors" class="space-y-3 max-h-64 overflow-y-auto">
+                        <div class="text-center text-slate-400 py-4">กำลังโหลดข้อมูล...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Thank You Message -->
+        <div class="mt-12 text-center bg-gradient-to-r from-accent-100 to-brand-100 rounded-2xl p-8">
+            <h3 class="text-2xl font-bold text-brand-800">ขอบคุณสำหรับน้ำใจของท่าน 💖</h3>
+            <p class="mt-2 text-slate-600 max-w-2xl mx-auto">
+                ทุกบาททุกสตางค์ที่ท่านบริจาค จะนำไปพัฒนาการศึกษาและสิ่งอำนวยความสะดวกให้กับนักเรียนของเรา
+                ขอให้ท่านและครอบครัวมีความสุข ความเจริญตลอดไป
+            </p>
+            <a href="index.html"
+                class="inline-block mt-4 px-6 py-2 bg-brand-600 text-white rounded-xl hover:bg-brand-700 transition">
+                ← กลับหน้าหลัก
+            </a>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-brand-900 text-white py-8 mt-12">
+        <div class="max-w-6xl mx-auto px-4 text-center">
+            <p class="text-sm text-white/80">© <span id="year"></span> โรงเรียนบ้านขัวก่าย • สพป.สกลนคร เขต 3</p>
+        </div>
+    </footer>
+
+    <script>
+        document.getElementById('year').textContent = new Date().getFullYear();
+
+        // Format number with commas
+        function formatNumber(num) {
+            return String(num).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        }
+
+        // Load donation data from Supabase
+        async function loadDonationData() {
+            try {
+                // Load donation settings
+                const { data: settings, error: settingsError } = await supabase
+                    .from('donation_settings')
+                    .select('*')
+                    .single();
+
+                if (!settingsError && settings) {
+                    // Update QR Code
+                    if (settings.qr_code_url) {
+                        document.getElementById('qrCodeImage').src = settings.qr_code_url;
+                        document.getElementById('qrCodeImage').classList.remove('hidden');
+                        document.getElementById('qrPlaceholder').classList.add('hidden');
+                    }
+
+                    // Update account info
+                    if (settings.account_name) document.getElementById('accountName').textContent = settings.account_name;
+                    if (settings.account_number) document.getElementById('accountNumber').textContent = settings.account_number;
+                    if (settings.bank_name) document.getElementById('bankName').textContent = settings.bank_name;
+                    if (settings.project_name) document.getElementById('projectName').textContent = settings.project_name;
+
+                    // Update totals
+                    const total = settings.total_amount || 0;
+                    const goal = settings.goal_amount || 500000;
+                    const donors = settings.donor_count || 0;
+                    const progress = Math.min(100, Math.round((total / goal) * 100));
+
+                    document.getElementById('totalAmount').textContent = '฿ ' + formatNumber(total);
+                    document.getElementById('goalAmount').textContent = '฿ ' + formatNumber(goal);
+                    document.getElementById('donorCount').textContent = formatNumber(donors);
+                    document.getElementById('progressPercent').textContent = progress + '%';
+                    document.getElementById('progressBar').style.width = progress + '%';
+                }
+
+                // Load recent donors
+                const { data: donors, error: donorsError } = await supabase
+                    .from('donors')
+                    .select('*')
+                    .order('created_at', { ascending: false })
+                    .limit(10);
+
+                const donorsList = document.getElementById('recentDonors');
+
+                if (!donorsError && donors && donors.length > 0) {
+                    donorsList.innerHTML = donors.map(d => `
+            <div class="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
+              <div>
+                <div class="font-medium text-slate-800">${d.name || 'ไม่ระบุชื่อ'}</div>
+                <div class="text-xs text-slate-500">${d.message || ''}</div>
+              </div>
+              <div class="text-right">
+                <div class="font-bold text-brand-600">฿${formatNumber(d.amount)}</div>
+                <div class="text-xs text-slate-400">${new Date(d.created_at).toLocaleDateString('th-TH')}</div>
+              </div>
+            </div>
+          `).join('');
+                } else {
+                    donorsList.innerHTML = '<div class="text-center text-slate-400 py-4">ยังไม่มีรายการบริจาค</div>';
+                }
+
+            } catch (e) {
+                console.error('Error loading donation data:', e);
+            }
+        }
+
+        // Initialize
+        loadDonationData();
+    </script>
+</body>
+
+</html>

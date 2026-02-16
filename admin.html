@@ -1,0 +1,1862 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - ระบบจัดการข่าว</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'IBM Plex Sans Thai', 'IBM Plex Sans', sans-serif;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://media-library.cloudinary.com/global/all.js"></script>
+    <script src="js/config.js"></script>
+</head>
+
+<body class="bg-gray-100 min-h-screen">
+
+    <!-- Login Section -->
+    <div id="loginSection" class="flex items-center justify-center min-h-screen">
+        <div class="bg-white p-8 rounded-lg shadow-lg w-96">
+            <h2 class="text-2xl font-bold mb-6 text-center text-blue-600">เข้าสู่ระบบผู้ดูแล</h2>
+            <form id="loginForm" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Email</label>
+                    <input type="email" id="email"
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Password</label>
+                    <input type="password" id="password"
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2" required>
+                </div>
+                <button type="submit" class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700">
+                    เข้าสู่ระบบ
+                </button>
+            </form>
+            <p id="loginError" class="mt-4 text-red-500 text-sm text-center hidden"></p>
+        </div>
+    </div>
+
+    <!-- Dashboard Section -->
+    <div id="dashboardSection" class="hidden">
+        <nav class="bg-blue-600 text-white p-4 shadow-md">
+            <div class="container mx-auto flex justify-between items-center">
+                <h1 class="text-xl font-bold">Admin Dashboard</h1>
+                <button id="logoutBtn" class="bg-blue-700 px-4 py-2 rounded hover:bg-blue-800">Logout</button>
+            </div>
+        </nav>
+
+        <!-- Tabs Navigation -->
+        <div class="container mx-auto px-6 pt-6">
+            <div class="flex gap-2 border-b flex-wrap">
+                <button id="tabNews" onclick="switchTab('news')"
+                    class="px-4 py-2 font-medium border-b-2 border-blue-600 text-blue-600">
+                    📰 จัดการข่าว
+                </button>
+                <button id="tabBanners" onclick="switchTab('banners')"
+                    class="px-4 py-2 font-medium text-gray-500 hover:text-gray-700">
+                    🖼️ จัดการแบนเนอร์
+                </button>
+                <button id="tabEvents" onclick="switchTab('events')"
+                    class="px-4 py-2 font-medium text-gray-500 hover:text-gray-700">
+                    📅 จัดการกิจกรรม
+                </button>
+                <button id="tabDonation" onclick="switchTab('donation')"
+                    class="px-4 py-2 font-medium text-gray-500 hover:text-gray-700">
+                    💰 จัดการบริจาค
+                </button>
+                <button id="tabStaff" onclick="switchTab('staff')"
+                    class="px-4 py-2 font-medium text-gray-500 hover:text-gray-700">
+                    👨‍🏫 จัดการบุคลากร
+                </button>
+            </div>
+        </div>
+
+        <!-- News Section -->
+        <div id="newsSection" class="container mx-auto p-6">
+            <div class="flex justify-between mb-6">
+                <h2 class="text-2xl font-semibold">รายการข่าวทั้งหมด</h2>
+                <button onclick="openModal()"
+                    class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 flex items-center gap-2">
+                    <span>+</span> เพิ่มข่าวใหม่
+                </button>
+            </div>
+
+            <div class="bg-white rounded-lg shadow overflow-hidden">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                วันที่</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                รูปปก</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                หัวข้อ</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                จัดการ</th>
+                        </tr>
+                    </thead>
+                    <tbody id="newsTableBody" class="bg-white divide-y divide-gray-200">
+                        <!-- Rows will be populated here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Banners Section -->
+        <div id="bannersSection" class="container mx-auto p-6 hidden">
+            <div class="flex justify-between mb-6">
+                <div>
+                    <h2 class="text-2xl font-semibold">🖼️ แบนเนอร์ประชาสัมพันธ์</h2>
+                    <p class="text-sm text-gray-500 mt-1">รูปภาพจะแสดงเป็นสไลด์โชว์บนหน้าเว็บไซต์</p>
+                </div>
+                <button onclick="openBannerModal()"
+                    class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 flex items-center gap-2">
+                    <span>+</span> เพิ่มแบนเนอร์
+                </button>
+            </div>
+
+            <div class="bg-white rounded-lg shadow overflow-hidden">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">รูปภาพ</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">ชื่อ</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">ลิงก์</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">ลำดับ</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">สถานะ</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">จัดการ</th>
+                        </tr>
+                    </thead>
+                    <tbody id="bannersTableBody" class="bg-white divide-y divide-gray-200">
+                        <!-- Rows will be populated here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Banner Modal Form -->
+        <div id="bannerModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+            <div class="relative top-20 mx-auto p-5 border w-full max-w-lg shadow-lg rounded-md bg-white">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 id="bannerModalTitle" class="text-lg font-bold">เพิ่มแบนเนอร์</h3>
+                    <button onclick="closeBannerModal()"
+                        class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+                </div>
+
+                <form id="bannerForm" class="space-y-4">
+                    <input type="hidden" id="editBannerId" name="id">
+
+                    <div>
+                        <label class="block text-sm font-medium">ชื่อแบนเนอร์</label>
+                        <input type="text" id="bannerTitle" name="title" class="mt-1 block w-full border rounded p-2"
+                            placeholder="เช่น รับสมัครนักเรียนใหม่ 2569">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium">รูปภาพ</label>
+                        <input type="hidden" id="bannerImageUrl" name="image_url">
+                        <div class="mt-2 space-y-3">
+                            <div class="relative w-full aspect-[16/9] bg-gray-100 rounded border overflow-hidden">
+                                <img id="bannerImagePreview" src="https://via.placeholder.com/800x450?text=Preview"
+                                    class="w-full h-full object-cover">
+                            </div>
+                            <input type="file" id="bannerImageFile" accept="image/*"
+                                class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                            <p class="text-xs text-gray-500">แนะนำขนาด 1600x900 px (อัตราส่วน 16:9)
+                                เพื่อให้แสดงผลได้ดีที่สุด</p>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium">ลิงก์ (URL)</label>
+                        <input type="text" id="bannerLinkUrl" name="link_url"
+                            class="mt-1 block w-full border rounded p-2" placeholder="https://... หรือเว้นว่างไว้">
+                        <p class="text-xs text-gray-500 mt-1">เมื่อคลิกที่แบนเนอร์จะนำไปยังลิงก์นี้</p>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium">ลำดับการแสดง</label>
+                            <input type="number" id="bannerSortOrder" name="sort_order"
+                                class="mt-1 block w-full border rounded p-2" value="1">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium">สถานะ</label>
+                            <select id="bannerIsActive" name="is_active" class="mt-1 block w-full border rounded p-2">
+                                <option value="true">🟢 เปิดใช้งาน</option>
+                                <option value="false">🔴 ปิดใช้งาน</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium">ตำแหน่งรูปภาพ</label>
+                        <select id="bannerImagePosition" name="image_position"
+                            class="mt-1 block w-full border rounded p-2"
+                            onchange="document.getElementById('bannerImagePreview').style.objectPosition = this.value">
+                            <option value="center">กลาง (Center)</option>
+                            <option value="top">บน (Top)</option>
+                            <option value="bottom">ล่าง (Bottom)</option>
+                            <option value="left">ซ้าย (Left)</option>
+                            <option value="right">ขวา (Right)</option>
+                            <option value="top left">บนซ้าย (Top Left)</option>
+                            <option value="top right">บนขวา (Top Right)</option>
+                            <option value="bottom left">ล่างซ้าย (Bottom Left)</option>
+                            <option value="bottom right">ล่างขวา (Bottom Right)</option>
+                        </select>
+                        <p class="text-xs text-gray-500 mt-1">กำหนดส่วนของรูปที่จะแสดงเมื่อรูปถูกครอป</p>
+                    </div>
+
+                    <div class="flex justify-end gap-2 pt-4">
+                        <button type="button" onclick="closeBannerModal()"
+                            class="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300">ยกเลิก</button>
+                        <button type="submit"
+                            class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">บันทึก</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Events Section -->
+        <div id="eventsSection" class="container mx-auto p-6 hidden">
+            <div class="flex justify-between mb-6">
+                <h2 class="text-2xl font-semibold">ปฏิทินกิจกรรม</h2>
+                <button onclick="openEventModal()"
+                    class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 flex items-center gap-2">
+                    <span>+</span> เพิ่มกิจกรรมใหม่
+                </button>
+            </div>
+
+            <div class="bg-white rounded-lg shadow overflow-hidden">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                วันที่</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                ชื่อกิจกรรม</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                สถานที่/เวลา</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                จัดการ</th>
+                        </tr>
+                    </thead>
+                    <tbody id="eventsTableBody" class="bg-white divide-y divide-gray-200">
+                        <!-- Rows will be populated here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Donation Section -->
+        <div id="donationSection" class="container mx-auto p-6 hidden">
+            <div class="grid lg:grid-cols-2 gap-6">
+                <!-- Settings Form -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <h2 class="text-xl font-semibold mb-4">⚙️ ตั้งค่าหน้าบริจาค</h2>
+                    <form id="donationSettingsForm" class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium">URL รูป QR Code</label>
+                            <input type="url" id="qrCodeUrl" class="mt-1 block w-full border rounded p-2"
+                                placeholder="https://... หรืออัพโหลดรูปแล้วใส่ URL">
+                            <p class="text-xs text-gray-500 mt-1">อัพโหลดรูป QR ไปที่ Supabase Storage แล้วใส่ URL</p>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium">ชื่อบัญชี</label>
+                                <input type="text" id="accountName" class="mt-1 block w-full border rounded p-2">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium">ธนาคาร</label>
+                                <input type="text" id="bankName" class="mt-1 block w-full border rounded p-2">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium">เลขบัญชี</label>
+                            <input type="text" id="accountNumber" class="mt-1 block w-full border rounded p-2">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium">ชื่อโครงการ</label>
+                            <input type="text" id="projectName" class="mt-1 block w-full border rounded p-2"
+                                placeholder="เช่น โดมอเนกประสงค์">
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium">ยอดบริจาครวม (บาท)</label>
+                                <input type="number" id="totalAmount" class="mt-1 block w-full border rounded p-2"
+                                    value="0">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium">เป้าหมาย (บาท)</label>
+                                <input type="number" id="goalAmount" class="mt-1 block w-full border rounded p-2"
+                                    value="500000">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium">จำนวนผู้บริจาค</label>
+                            <input type="number" id="donorCount" class="mt-1 block w-full border rounded p-2" value="0">
+                        </div>
+
+                        <button type="submit" class="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700">
+                            💾 บันทึกการตั้งค่า
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Donors List -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-xl font-semibold">🙏 รายชื่อผู้บริจาค</h2>
+                        <button onclick="openDonorModal()"
+                            class="bg-green-600 text-white px-3 py-1 rounded text-sm hover:bg-green-700">
+                            + เพิ่มผู้บริจาค
+                        </button>
+                    </div>
+                    <div id="donorsTableContainer" class="max-h-96 overflow-y-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50 sticky top-0">
+                                <tr>
+                                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500">ชื่อ</th>
+                                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500">จำนวน</th>
+                                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500">วันที่</th>
+                                    <th class="px-4 py-2 text-xs font-medium text-gray-500">ลบ</th>
+                                </tr>
+                            </thead>
+                            <tbody id="donorsTableBody" class="divide-y divide-gray-200">
+                                <!-- Rows populated here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Donor Modal -->
+    <div id="donorModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+        <div class="relative top-20 mx-auto p-5 border w-full max-w-md shadow-lg rounded-md bg-white">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-bold">เพิ่มผู้บริจาค</h3>
+                <button onclick="closeDonorModal()" class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+            </div>
+
+            <form id="donorForm" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium">ชื่อผู้บริจาค</label>
+                    <input type="text" id="donorName" class="mt-1 block w-full border rounded p-2"
+                        placeholder="ชื่อ-นามสกุล หรือ ไม่ระบุชื่อ">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium">จำนวนเงิน (บาท)</label>
+                    <input type="number" id="donorAmount" class="mt-1 block w-full border rounded p-2" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium">ข้อความ/หมายเหตุ</label>
+                    <input type="text" id="donorMessage" class="mt-1 block w-full border rounded p-2"
+                        placeholder="เช่น รุ่น 5, ศิษย์เก่า">
+                </div>
+                <div class="flex justify-end gap-2">
+                    <button type="button" onclick="closeDonorModal()"
+                        class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300">ยกเลิก</button>
+                    <button type="submit"
+                        class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">บันทึก</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Staff Section -->
+    <div id="staffSection" class="container mx-auto p-6 hidden">
+        <div class="flex justify-between mb-6">
+            <h2 class="text-2xl font-semibold">👨‍🏫 ผู้บริหาร & คณะครู</h2>
+            <button onclick="openStaffModal()"
+                class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 flex items-center gap-2">
+                <span>+</span> เพิ่มบุคลากร
+            </button>
+        </div>
+
+        <div class="bg-white rounded-lg shadow overflow-hidden">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">รูปภาพ</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">ชื่อ-สกุล</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">ตำแหน่ง</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">ลำดับ</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">จัดการ</th>
+                    </tr>
+                </thead>
+                <tbody id="staffTableBody" class="bg-white divide-y divide-gray-200">
+                    <!-- Rows will be populated here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Staff Modal Form -->
+    <div id="staffModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+        <div class="relative top-20 mx-auto p-5 border w-full max-w-lg shadow-lg rounded-md bg-white">
+            <div class="flex justify-between items-center mb-4">
+                <h3 id="staffModalTitle" class="text-lg font-bold">เพิ่มบุคลากร</h3>
+                <button onclick="closeStaffModal()" class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+            </div>
+
+            <form id="staffForm" class="space-y-4">
+                <input type="hidden" id="editStaffId" name="id">
+
+                <div>
+                    <label class="block text-sm font-medium">ชื่อ-นามสกุล</label>
+                    <input type="text" id="staffName" name="name" class="mt-1 block w-full border rounded p-2"
+                        placeholder="เช่น นายอภิชาติ ใจดี" required>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium">ตำแหน่ง</label>
+                    <input type="text" id="staffPosition" name="position" class="mt-1 block w-full border rounded p-2"
+                        placeholder="เช่น ผู้อำนวยการโรงเรียน, ครูประจำชั้น ป.1">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium">กลุ่ม/ประเภท</label>
+                    <select id="staffCategory" name="category" class="mt-1 block w-full border rounded p-2">
+                        <option value="executive">👔 ผู้บริหาร</option>
+                        <option value="kindergarten">🎒 ครูอนุบาล</option>
+                        <option value="p1">📚 ครู ป.1</option>
+                        <option value="p2">📚 ครู ป.2</option>
+                        <option value="p3">📚 ครู ป.3</option>
+                        <option value="p4">📖 ครู ป.4</option>
+                        <option value="p5">📖 ครู ป.5</option>
+                        <option value="p6">📖 ครู ป.6</option>
+                        <option value="m1">📘 ครู ม.1</option>
+                        <option value="m2">📘 ครู ม.2</option>
+                        <option value="m3">📘 ครู ม.3</option>
+                        <option value="other">👩‍🏫 บุคลากรอื่นๆ</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium">รูปภาพ</label>
+                    <input type="hidden" id="staffPhotoUrl" name="photo_url">
+                    <div class="mt-2 flex items-center gap-4">
+                        <img id="staffPhotoPreview" src="https://via.placeholder.com/80?text=No+Photo"
+                            class="w-20 h-20 rounded-full object-cover bg-gray-200 border">
+                        <div class="flex-1 space-y-2">
+                            <input type="file" id="staffPhotoFile" accept="image/*"
+                                class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                            <div class="text-xs text-gray-400 text-center">หรือ</div>
+                            <button type="button" onclick="openCloudinaryBrowser('staff')"
+                                class="w-full py-2 px-4 bg-purple-50 text-purple-700 rounded border border-purple-200 hover:bg-purple-100 text-sm font-medium flex items-center justify-center gap-2">
+                                ☁️ เลือกจาก Cloudinary
+                            </button>
+                            <input type="hidden" id="staffPhotoUrlInput">
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium">ลำดับการแสดง</label>
+                    <input type="number" id="staffSortOrder" name="sort_order"
+                        class="mt-1 block w-full border rounded p-2" placeholder="1, 2, 3... (ผู้บริหารก่อน)"
+                        value="10">
+                </div>
+
+                <div class="flex justify-end gap-2 pt-4">
+                    <button type="button" onclick="closeStaffModal()"
+                        class="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300">ยกเลิก</button>
+                    <button type="submit"
+                        class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">บันทึก</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Event Modal Form -->
+    <div id="eventModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+        <div class="relative top-20 mx-auto p-5 border w-full max-w-lg shadow-lg rounded-md bg-white">
+            <div class="flex justify-between items-center mb-4">
+                <h3 id="eventModalTitle" class="text-lg font-bold">เพิ่มกิจกรรมใหม่</h3>
+                <button onclick="closeEventModal()" class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+            </div>
+
+            <form id="eventForm" class="space-y-4">
+                <input type="hidden" id="editEventId" name="id">
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium">วันที่ (ตัวเลข)</label>
+                        <input type="text" id="eventDay" name="day" class="mt-1 block w-full border rounded p-2"
+                            placeholder="เช่น 15" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium">เดือน/ปี</label>
+                        <input type="text" id="eventMonth" name="month" class="mt-1 block w-full border rounded p-2"
+                            placeholder="เช่น ม.ค. 69" required>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium">ชื่อกิจกรรม</label>
+                    <input type="text" id="eventTitle" name="title" class="mt-1 block w-full border rounded p-2"
+                        required>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium">สถานที่ / เวลา</label>
+                    <input type="text" id="eventPlace" name="place" class="mt-1 block w-full border rounded p-2"
+                        placeholder="เช่น หอประชุม • 09:00-12:00 น.">
+                </div>
+
+                <div class="flex justify-end gap-2 pt-4">
+                    <button type="button" onclick="closeEventModal()"
+                        class="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300">ยกเลิก</button>
+                    <button type="submit"
+                        class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">บันทึก</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Form -->
+    <div id="newsModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+        <div class="relative top-20 mx-auto p-5 border w-full max-w-2xl shadow-lg rounded-md bg-white">
+            <div class="flex justify-between items-center mb-4">
+                <h3 id="modalTitle" class="text-lg font-bold">เพิ่มข่าวใหม่</h3>
+                <button onclick="closeModal()" class="text-gray-500 hover:text-gray-700">&times;</button>
+            </div>
+
+            <form id="newsForm" class="space-y-4" enctype="multipart/form-data">
+                <input type="hidden" id="editId" name="id">
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium">วันที่ (เช่น 20 ส.ค. 2568)</label>
+                        <input type="text" id="newsDate" name="date" class="mt-1 block w-full border rounded p-2"
+                            required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium">หมวดหมู่ (Tag)</label>
+                        <select id="newsTag" name="tag" class="mt-1 block w-full border rounded p-2">
+                            <option value="ข่าว">ข่าว</option>
+                            <option value="กิจกรรม">กิจกรรม</option>
+                            <option value="รับสมัคร">รับสมัคร</option>
+                            <option value="ประชาสัมพันธ์">ประชาสัมพันธ์</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium">หัวข้อข่าว</label>
+                    <input type="text" id="newsTitle" name="title" class="mt-1 block w-full border rounded p-2"
+                        required>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium">รูปปก</label>
+                    <div class="mt-1 space-y-2">
+                        <!-- Preview -->
+                        <div id="coverPreviewContainer"
+                            class="hidden relative w-full h-48 bg-gray-100 rounded-lg overflow-hidden border border-dashed border-gray-300 flex items-center justify-center">
+                            <img id="coverPreview" class="w-full h-full object-cover">
+                            <button type="button" onclick="removeCover()"
+                                class="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 shadow hover:bg-red-600">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20"
+                                    fill="currentColor">
+                                    <path fill-rule="evenodd"
+                                        d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                        clip-rule="evenodd" />
+                                </svg>
+                            </button>
+                        </div>
+
+                        <!-- File Input -->
+                        <input type="file" id="newsCoverFile" name="cover" accept="image/*" class="block w-full text-sm text-slate-500
+                              file:mr-4 file:py-2 file:px-4
+                              file:rounded-full file:border-0
+                              file:text-sm file:font-semibold
+                              file:bg-blue-50 file:text-blue-700
+                              hover:file:bg-blue-100
+                            " />
+
+                        <!-- Hidden Existing URL storage -->
+                        <input type="hidden" id="newsCoverUrl" name="existingCover">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium">ตำแหน่งแสดงผลรูปปก</label>
+                    <div class="mt-1 flex items-center gap-3">
+                        <select id="newsCoverPosition" name="cover_position" class="flex-1 border rounded p-2">
+                            <option value="center">กึ่งกลาง (Center)</option>
+                            <option value="top">ด้านบน (Top)</option>
+                            <option value="bottom">ด้านล่าง (Bottom)</option>
+                            <option value="left">ด้านซ้าย (Left)</option>
+                            <option value="right">ด้านขวา (Right)</option>
+                        </select>
+                        <div class="flex gap-1">
+                            <button type="button" onclick="setCoverPosition('top')" title="ด้านบน"
+                                class="px-2 py-1 border rounded hover:bg-gray-100 text-sm">⬆️</button>
+                            <button type="button" onclick="setCoverPosition('center')" title="กึ่งกลาง"
+                                class="px-2 py-1 border rounded hover:bg-gray-100 text-sm">⏺️</button>
+                            <button type="button" onclick="setCoverPosition('bottom')" title="ด้านล่าง"
+                                class="px-2 py-1 border rounded hover:bg-gray-100 text-sm">⬇️</button>
+                        </div>
+                    </div>
+                    <p class="text-xs text-gray-500 mt-1">💡 กำหนดตำแหน่งที่จะแสดงเมื่อรูปถูกครอป (เช่น รูปกลุ่มคน เลือก
+                        "ด้านบน" เพื่อแสดงใบหน้า)</p>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium">คำอธิบายย่อ</label>
+                    <textarea id="newsDesc" name="desc" rows="2" class="mt-1 block w-full border rounded p-2"
+                        required></textarea>
+                </div>
+
+                <!-- Gallery Images Upload -->
+                <div>
+                    <label class="block text-sm font-medium">รูปภาพประกอบเนื้อหา (เลือกได้หลายรูป)</label>
+                    <div class="mt-1 space-y-3">
+                        <!-- Preview Grid -->
+                        <div id="galleryPreviewGrid" class="grid grid-cols-4 gap-2">
+                            <!-- Previews will be added here -->
+                        </div>
+
+                        <!-- Upload Button -->
+                        <div class="flex items-center gap-3">
+                            <input type="file" id="galleryFiles" accept="image/*" multiple class="block w-full text-sm text-slate-500
+                                file:mr-4 file:py-2 file:px-4
+                                file:rounded-full file:border-0
+                                file:text-sm file:font-semibold
+                                file:bg-green-50 file:text-green-700
+                                hover:file:bg-green-100" />
+                            <button type="button" id="insertGalleryBtn"
+                                class="px-3 py-2 bg-green-600 text-white text-sm rounded hover:bg-green-700 whitespace-nowrap disabled:opacity-50"
+                                disabled>
+                                แทรกรูปในเนื้อหา
+                            </button>
+                        </div>
+                        <p class="text-xs text-gray-500">เลือกรูปภาพแล้วกด "แทรกรูปในเนื้อหา" เพื่อเพิ่มรูปในเนื้อข่าว
+                            (สูงสุด 10 รูป)</p>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium">เนื้อหาข่าว (รองรับ HTML และรูปภาพ)</label>
+                    <textarea id="newsContent" name="content" rows="8"
+                        class="mt-1 block w-full border rounded p-2 font-mono text-sm" required
+                        placeholder="พิมพ์เนื้อหาข่าวที่นี่..."></textarea>
+                    <p class="text-xs text-gray-500 mt-1">💡 เคล็ดลับ: เลือกรูปภาพด้านบน แล้วกด "แทรกรูปในเนื้อหา"
+                        เพื่อเพิ่มรูปภาพในตำแหน่งที่ต้องการ</p>
+                </div>
+
+                <div class="flex justify-end gap-2 pt-4">
+                    <button type="button" onclick="closeModal()"
+                        class="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300">ยกเลิก</button>
+                    <button type="submit"
+                        class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">บันทึก</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main Logic -->
+    <script>
+        // DOM Elements
+        const loginSection = document.getElementById('loginSection');
+        const dashboardSection = document.getElementById('dashboardSection');
+        const loginForm = document.getElementById('loginForm');
+        const loginError = document.getElementById('loginError');
+        const loginBtn = loginForm.querySelector('button[type="submit"]');
+
+        // Auth State Listener
+        supabase.auth.onAuthStateChange((event, session) => {
+            if (session) {
+                showDashboard();
+            } else {
+                showLogin();
+            }
+        });
+
+        function showDashboard() {
+            loginSection.classList.add('hidden');
+            dashboardSection.classList.remove('hidden');
+            loadNews();
+        }
+
+        function showLogin() {
+            loginSection.classList.remove('hidden');
+            dashboardSection.classList.add('hidden');
+        }
+
+        // Login Handler
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            loginBtn.textContent = "Checking...";
+            loginBtn.disabled = true;
+            loginError.classList.add('hidden');
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            console.log('🔐 Attempting login for:', email);
+
+            try {
+                if (!supabase) {
+                    throw new Error('Supabase not initialized. Please check your configuration.');
+                }
+
+                const { data, error } = await supabase.auth.signInWithPassword({
+                    email: email,
+                    password: password,
+                });
+
+                console.log('Login response:', { data, error });
+
+                if (error) {
+                    console.error('❌ Login error:', error);
+                    throw error;
+                }
+
+                if (data?.session) {
+                    console.log('✅ Login successful!');
+                    // The onAuthStateChange listener will handle showing the dashboard
+                } else {
+                    throw new Error('No session returned from login');
+                }
+            } catch (error) {
+                console.error('❌ Login failed:', error);
+                let errorMsg = error.message;
+
+                // Provide helpful error messages
+                if (errorMsg.includes('Invalid login credentials')) {
+                    errorMsg = 'อีเมลหรือรหัสผ่านไม่ถูกต้อง';
+                } else if (errorMsg.includes('Email not confirmed')) {
+                    errorMsg = 'กรุณายืนยันอีเมลก่อนเข้าสู่ระบบ';
+                }
+
+                loginError.textContent = "Error: " + errorMsg;
+                loginError.classList.remove('hidden');
+            } finally {
+                loginBtn.textContent = "เข้าสู่ระบบ";
+                loginBtn.disabled = false;
+            }
+        });
+
+        // Logout
+        document.getElementById('logoutBtn').addEventListener('click', async () => {
+            if (!confirm("ต้องการออกจากระบบ?")) return;
+            const { error } = await supabase.auth.signOut();
+            if (error) alert("Logout error: " + error.message);
+        });
+
+        // News Management
+        let allNewsMap = new Map();
+
+        async function loadNews() {
+            const tableBody = document.getElementById('newsTableBody');
+            tableBody.innerHTML = '<tr><td colspan="4" class="text-center py-4">กำลังโหลดข้อมูล...</td></tr>';
+
+            try {
+                const { data, error } = await supabase
+                    .from('news')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                tableBody.innerHTML = '';
+                allNewsMap.clear();
+
+                if (!data || data.length === 0) {
+                    tableBody.innerHTML = '<tr><td colspan="4" class="text-center py-4">ไม่พบข่าวสาร</td></tr>';
+                    return;
+                }
+
+                data.forEach(item => {
+                    allNewsMap.set(String(item.id), item);
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${item.event_date || '-'}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <img src="${item.cover_image || 'https://via.placeholder.com/100'}" class="h-10 w-16 object-cover rounded bg-gray-200">
+                        </td>
+                        <td class="px-6 py-4 text-sm text-gray-900 max-w-xs truncate">${item.title}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <button onclick="window.editNews('${item.id}')" class="text-indigo-600 hover:text-indigo-900 mr-3">แก้ไข</button>
+                            <button onclick="window.deleteNews('${item.id}')" class="text-red-600 hover:text-red-900">ลบ</button>
+                        </td>
+                    `;
+                    tableBody.appendChild(tr);
+                });
+            } catch (e) {
+                console.error(e);
+                tableBody.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-red-500">เกิดข้อผิดพลาด: ${e.message}</td></tr>`;
+            }
+        }
+
+        // Compress image before upload
+        async function compressImage(file, maxWidth = 1200, quality = 0.85) {
+            return new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        let width = img.width;
+                        let height = img.height;
+
+                        // Resize if larger than maxWidth
+                        if (width > maxWidth) {
+                            height = (height * maxWidth) / width;
+                            width = maxWidth;
+                        }
+
+                        canvas.width = width;
+                        canvas.height = height;
+
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+
+                        canvas.toBlob((blob) => {
+                            const compressedFile = new File([blob], file.name, {
+                                type: 'image/jpeg',
+                                lastModified: Date.now()
+                            });
+                            console.log(`📷 บีบอัดรูป: ${(file.size / 1024).toFixed(0)}KB → ${(blob.size / 1024).toFixed(0)}KB`);
+                            resolve(compressedFile);
+                        }, 'image/jpeg', quality);
+                    };
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        // Upload image to Cloudinary (for news covers)
+        async function uploadImage(file) {
+            // Compress image before upload (1200px width, 85% quality for news)
+            const compressedFile = await compressImage(file, 1200, 0.85);
+
+            // Generate unique public_id to prevent caching issues
+            const uniqueId = `news_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`;
+
+            const formData = new FormData();
+            formData.append('file', compressedFile);
+            formData.append('upload_preset', 'school_uploads');
+            formData.append('folder', 'news');
+            formData.append('public_id', uniqueId); // ใช้ชื่อไฟล์ใหม่ทุกครั้ง
+
+            const response = await fetch(
+                'https://api.cloudinary.com/v1_1/dlisgusfp/image/upload',
+                { method: 'POST', body: formData }
+            );
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error?.message || 'Upload failed');
+            }
+
+            const data = await response.json();
+            return data.secure_url;
+        }
+
+        // Form Submission (Add/Edit)
+        document.getElementById('newsForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const form = e.target;
+            const submitBtn = form.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'กำลังบันทึก...';
+
+            const formData = new FormData(form);
+            const id = formData.get('id');
+            const file = document.getElementById('newsCoverFile').files[0];
+
+            // Auto generate slug if empty or just based on title
+            const title = formData.get('title');
+            const slug = title.toLowerCase().replace(/ /g, '-').replace(/[^\w\u0E00-\u0E7F-]+/g, '');
+
+            try {
+                let coverUrl = formData.get('existingCover');
+
+                if (file) {
+                    try {
+                        coverUrl = await uploadImage(file);
+                    } catch (uploadError) {
+                        alert('Image upload failed: ' + uploadError.message + '\nProceeding without new image.');
+                    }
+                }
+
+                const newsData = {
+                    title: title,
+                    event_date: formData.get('date'),
+                    tag: formData.get('tag'),
+                    description: formData.get('desc'),
+                    content: formData.get('content'),
+                    cover_image: coverUrl,
+                    cover_position: formData.get('cover_position') || 'center',
+                    slug: slug
+                };
+
+                let error;
+                if (id) {
+                    const res = await supabase.from('news').update(newsData).eq('id', id);
+                    error = res.error;
+                } else {
+                    const res = await supabase.from('news').insert([newsData]);
+                    error = res.error;
+                }
+
+                if (error) throw error;
+
+                alert('บันทึกข้อมูลเรียบร้อย ✅');
+                closeModal();
+                loadNews();
+
+            } catch (error) {
+                console.error(error);
+                alert('เกิดข้อผิดพลาด: ' + error.message);
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'บันทึก';
+            }
+        });
+
+        // Image Preview Logic
+        const fileInput = document.getElementById('newsCoverFile');
+        const previewContainer = document.getElementById('coverPreviewContainer');
+        const previewImage = document.getElementById('coverPreview');
+        const coverUrlInput = document.getElementById('newsCoverUrl');
+
+        fileInput.addEventListener('change', function (e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => showPreview(e.target.result);
+                reader.readAsDataURL(file);
+            }
+        });
+
+        function showPreview(src, position = 'center') {
+            previewImage.src = src;
+            previewImage.style.objectPosition = position;
+            previewContainer.classList.remove('hidden');
+        }
+
+        window.removeCover = () => {
+            fileInput.value = '';
+            coverUrlInput.value = '';
+            previewContainer.classList.add('hidden');
+            previewImage.src = '';
+            previewImage.style.objectPosition = 'center';
+            document.getElementById('newsCoverPosition').value = 'center';
+        };
+
+        // Cover Position Control
+        window.setCoverPosition = (position) => {
+            document.getElementById('newsCoverPosition').value = position;
+            previewImage.style.objectPosition = position;
+        };
+
+        // Update position preview when dropdown changes
+        document.getElementById('newsCoverPosition').addEventListener('change', function () {
+            previewImage.style.objectPosition = this.value;
+        });
+
+        // Modal Logic
+        window.openModal = () => document.getElementById('newsModal').classList.remove('hidden');
+
+        window.closeModal = () => {
+            document.getElementById('newsModal').classList.add('hidden');
+            document.getElementById('newsForm').reset();
+            document.getElementById('editId').value = '';
+            document.getElementById('modalTitle').textContent = 'เพิ่มข่าวใหม่';
+            window.removeCover();
+        };
+
+        window.editNews = (id) => {
+            const data = allNewsMap.get(String(id));
+            if (!data) return;
+
+            document.getElementById('editId').value = id;
+            document.getElementById('newsDate').value = data.event_date || '';
+            document.getElementById('newsTag').value = data.tag || 'ข่าว';
+            document.getElementById('newsTitle').value = data.title || '';
+            document.getElementById('newsDesc').value = data.description || '';
+            document.getElementById('newsContent').value = data.content || '';
+
+            // Cover position
+            const coverPosition = data.cover_position || 'center';
+            document.getElementById('newsCoverPosition').value = coverPosition;
+
+            // For cover, we store the existing path
+            document.getElementById('newsCoverUrl').value = data.cover_image || '';
+            if (data.cover_image) showPreview(data.cover_image, coverPosition);
+            else window.removeCover();
+
+            document.getElementById('modalTitle').textContent = 'แก้ไขข่าว';
+            openModal();
+        };
+
+        window.deleteNews = async (id) => {
+            if (!confirm("ยืนยันการลบ?")) return;
+            try {
+                const { error } = await supabase.from('news').delete().eq('id', id);
+                if (error) throw error;
+                loadNews();
+            } catch (e) {
+                alert('เกิดข้อผิดพลาด: ' + e.message);
+            }
+        };
+
+        // ========== Gallery Upload Logic ==========
+        const galleryFilesInput = document.getElementById('galleryFiles');
+        const galleryPreviewGrid = document.getElementById('galleryPreviewGrid');
+        const insertGalleryBtn = document.getElementById('insertGalleryBtn');
+        let pendingGalleryFiles = [];
+        let uploadedGalleryUrls = [];
+
+        // Preview selected gallery images
+        galleryFilesInput.addEventListener('change', function (e) {
+            const files = Array.from(e.target.files).slice(0, 10); // Max 10 files
+            pendingGalleryFiles = files;
+            galleryPreviewGrid.innerHTML = '';
+            uploadedGalleryUrls = [];
+
+            if (files.length === 0) {
+                insertGalleryBtn.disabled = true;
+                return;
+            }
+
+            files.forEach((file, index) => {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    const div = document.createElement('div');
+                    div.className = 'relative aspect-square bg-gray-100 rounded overflow-hidden border';
+                    div.innerHTML = `
+                        <img src="${event.target.result}" class="w-full h-full object-cover" alt="Preview ${index + 1}">
+                        <span class="absolute bottom-1 right-1 bg-black/50 text-white text-xs px-1 rounded">${index + 1}</span>
+                    `;
+                    galleryPreviewGrid.appendChild(div);
+                };
+                reader.readAsDataURL(file);
+            });
+
+            insertGalleryBtn.disabled = false;
+            insertGalleryBtn.textContent = `แทรก ${files.length} รูปในเนื้อหา`;
+        });
+
+        // Upload and insert gallery images
+        insertGalleryBtn.addEventListener('click', async function () {
+            if (pendingGalleryFiles.length === 0) return;
+
+            const originalText = this.textContent;
+            this.disabled = true;
+            this.textContent = 'กำลังอัพโหลด...';
+
+            try {
+                const uploadPromises = pendingGalleryFiles.map(async (file, index) => {
+                    this.textContent = `อัพโหลด ${index + 1}/${pendingGalleryFiles.length}...`;
+                    const url = await uploadImage(file);
+                    return url;
+                });
+
+                uploadedGalleryUrls = await Promise.all(uploadPromises);
+
+                // Generate HTML for images
+                const imagesHtml = uploadedGalleryUrls.map((url, i) =>
+                    `<img src="${url}" alt="รูปที่ ${i + 1}" style="max-width:100%; margin:10px 0; border-radius:8px;">`
+                ).join('\n');
+
+                // Insert at cursor position or at end
+                const contentArea = document.getElementById('newsContent');
+                const cursorPos = contentArea.selectionStart;
+                const currentContent = contentArea.value;
+
+                if (cursorPos !== undefined && cursorPos > 0) {
+                    // Insert at cursor
+                    contentArea.value = currentContent.slice(0, cursorPos) + '\n' + imagesHtml + '\n' + currentContent.slice(cursorPos);
+                } else {
+                    // Append at end
+                    contentArea.value = currentContent + '\n' + imagesHtml;
+                }
+
+                // Clear gallery selection
+                galleryFilesInput.value = '';
+                galleryPreviewGrid.innerHTML = '';
+                pendingGalleryFiles = [];
+                uploadedGalleryUrls = [];
+
+                alert(`✅ เพิ่มรูปภาพ ${uploadPromises.length} รูปเรียบร้อย!`);
+                this.textContent = 'แทรกรูปในเนื้อหา';
+                this.disabled = true;
+
+            } catch (error) {
+                console.error('Gallery upload error:', error);
+                alert('❌ อัพโหลดรูปภาพล้มเหลว: ' + error.message);
+                this.textContent = originalText;
+                this.disabled = false;
+            }
+        });
+
+        // Clear gallery when modal closes
+        const originalCloseModal = window.closeModal;
+        window.closeModal = () => {
+            originalCloseModal();
+            galleryFilesInput.value = '';
+            galleryPreviewGrid.innerHTML = '';
+            pendingGalleryFiles = [];
+            uploadedGalleryUrls = [];
+            insertGalleryBtn.disabled = true;
+            insertGalleryBtn.textContent = 'แทรกรูปในเนื้อหา';
+        };
+
+        // ========== Tab Switching ==========
+        window.switchTab = (tab) => {
+            const newsSection = document.getElementById('newsSection');
+            const bannersSection = document.getElementById('bannersSection');
+            const eventsSection = document.getElementById('eventsSection');
+            const donationSection = document.getElementById('donationSection');
+            const staffSection = document.getElementById('staffSection');
+            const tabNews = document.getElementById('tabNews');
+            const tabBanners = document.getElementById('tabBanners');
+            const tabEvents = document.getElementById('tabEvents');
+            const tabDonation = document.getElementById('tabDonation');
+            const tabStaff = document.getElementById('tabStaff');
+
+            // Hide all sections
+            newsSection.classList.add('hidden');
+            bannersSection.classList.add('hidden');
+            eventsSection.classList.add('hidden');
+            donationSection.classList.add('hidden');
+            staffSection.classList.add('hidden');
+
+            // Reset all tabs
+            [tabNews, tabBanners, tabEvents, tabDonation, tabStaff].forEach(t => {
+                t.classList.remove('border-b-2', 'border-blue-600', 'text-blue-600');
+                t.classList.add('text-gray-500');
+            });
+
+            // Show selected
+            if (tab === 'news') {
+                newsSection.classList.remove('hidden');
+                tabNews.classList.add('border-b-2', 'border-blue-600', 'text-blue-600');
+                tabNews.classList.remove('text-gray-500');
+            } else if (tab === 'banners') {
+                bannersSection.classList.remove('hidden');
+                tabBanners.classList.add('border-b-2', 'border-blue-600', 'text-blue-600');
+                tabBanners.classList.remove('text-gray-500');
+                loadBanners();
+            } else if (tab === 'events') {
+                eventsSection.classList.remove('hidden');
+                tabEvents.classList.add('border-b-2', 'border-blue-600', 'text-blue-600');
+                tabEvents.classList.remove('text-gray-500');
+                loadEvents();
+            } else if (tab === 'donation') {
+                donationSection.classList.remove('hidden');
+                tabDonation.classList.add('border-b-2', 'border-blue-600', 'text-blue-600');
+                tabDonation.classList.remove('text-gray-500');
+                loadDonationSettings();
+                loadDonors();
+            } else if (tab === 'staff') {
+                staffSection.classList.remove('hidden');
+                tabStaff.classList.add('border-b-2', 'border-blue-600', 'text-blue-600');
+                tabStaff.classList.remove('text-gray-500');
+                loadStaff();
+            }
+        };
+
+        // ========== Banner Management ==========
+        let allBannersMap = new Map();
+
+        async function loadBanners() {
+            const tableBody = document.getElementById('bannersTableBody');
+            tableBody.innerHTML = '<tr><td colspan="6" class="text-center py-4">กำลังโหลดข้อมูล...</td></tr>';
+
+            try {
+                const { data, error } = await supabase
+                    .from('banners')
+                    .select('*')
+                    .order('sort_order', { ascending: true });
+
+                if (error) throw error;
+
+                tableBody.innerHTML = '';
+                allBannersMap.clear();
+
+                if (!data || data.length === 0) {
+                    tableBody.innerHTML = '<tr><td colspan="6" class="text-center py-4">ยังไม่มีแบนเนอร์</td></tr>';
+                    return;
+                }
+
+                data.forEach(item => {
+                    allBannersMap.set(String(item.id), item);
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td class="px-4 py-3">
+                            <img src="${item.image_url || 'https://via.placeholder.com/120x40'}" 
+                                 class="h-12 w-32 object-cover rounded bg-gray-200">
+                        </td>
+                        <td class="px-4 py-3 text-sm text-gray-900">${item.title || '-'}</td>
+                        <td class="px-4 py-3 text-sm text-gray-500 max-w-xs truncate">${item.link_url || '-'}</td>
+                        <td class="px-4 py-3 text-sm text-gray-500">${item.sort_order || 0}</td>
+                        <td class="px-4 py-3">
+                            <span class="px-2 py-1 text-xs rounded-full ${item.is_active ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}">
+                                ${item.is_active ? '🟢 เปิด' : '🔴 ปิด'}
+                            </span>
+                        </td>
+                        <td class="px-4 py-3 whitespace-nowrap text-sm font-medium">
+                            <button onclick="window.editBanner('${item.id}')" class="text-indigo-600 hover:text-indigo-900 mr-3">แก้ไข</button>
+                            <button onclick="window.deleteBanner('${item.id}')" class="text-red-600 hover:text-red-900">ลบ</button>
+                        </td>
+                    `;
+                    tableBody.appendChild(tr);
+                });
+            } catch (e) {
+                console.error(e);
+                tableBody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-red-500">เกิดข้อผิดพลาด: ${e.message}</td></tr>`;
+            }
+        }
+
+        function openBannerModal(editId = null) {
+            document.getElementById('bannerModal').classList.remove('hidden');
+            document.getElementById('bannerForm').reset();
+            document.getElementById('editBannerId').value = editId || '';
+            document.getElementById('bannerModalTitle').textContent = editId ? 'แก้ไขแบนเนอร์' : 'เพิ่มแบนเนอร์';
+            document.getElementById('bannerImagePreview').src = 'https://via.placeholder.com/400x150?text=Preview';
+            document.getElementById('bannerImageUrl').value = '';
+            document.getElementById('bannerSortOrder').value = '1';
+            document.getElementById('bannerIsActive').value = 'true';
+        }
+
+        window.closeBannerModal = () => {
+            document.getElementById('bannerModal').classList.add('hidden');
+        };
+
+        window.editBanner = (id) => {
+            const item = allBannersMap.get(String(id));
+            if (!item) return;
+
+            openBannerModal(id);
+            document.getElementById('bannerTitle').value = item.title || '';
+            document.getElementById('bannerImageUrl').value = item.image_url || '';
+            document.getElementById('bannerImagePreview').src = item.image_url || 'https://via.placeholder.com/400x150?text=Preview';
+            document.getElementById('bannerLinkUrl').value = item.link_url || '';
+            document.getElementById('bannerSortOrder').value = item.sort_order || 1;
+            document.getElementById('bannerIsActive').value = item.is_active ? 'true' : 'false';
+            document.getElementById('bannerImagePosition').value = item.image_position || 'center';
+            document.getElementById('bannerImagePreview').style.objectPosition = item.image_position || 'center';
+        };
+
+        window.deleteBanner = async (id) => {
+            if (!confirm('ต้องการลบแบนเนอร์นี้?')) return;
+
+            try {
+                const { error } = await supabase.from('banners').delete().eq('id', id);
+                if (error) throw error;
+                alert('ลบสำเร็จ');
+                loadBanners();
+            } catch (e) {
+                alert('เกิดข้อผิดพลาด: ' + e.message);
+            }
+        };
+
+        // Banner image preview
+        document.getElementById('bannerImageFile').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (ev) => {
+                    document.getElementById('bannerImagePreview').src = ev.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Banner form submission
+        document.getElementById('bannerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const form = e.target;
+            const submitBtn = form.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'กำลังบันทึก...';
+
+            const id = document.getElementById('editBannerId').value;
+            const file = document.getElementById('bannerImageFile').files[0];
+
+            try {
+                let imageUrl = document.getElementById('bannerImageUrl').value;
+
+                // Upload image if new file selected
+                if (file) {
+                    const compressedFile = await compressImage(file, 1600, 0.85);
+                    const uniqueId = `banner_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`;
+                    const formData = new FormData();
+                    formData.append('file', compressedFile);
+                    formData.append('upload_preset', 'school_uploads');
+                    formData.append('folder', 'banners');
+                    formData.append('public_id', uniqueId);
+
+                    const response = await fetch(
+                        'https://api.cloudinary.com/v1_1/dlisgusfp/image/upload',
+                        { method: 'POST', body: formData }
+                    );
+
+                    if (!response.ok) throw new Error('Upload failed');
+                    const data = await response.json();
+                    imageUrl = data.secure_url;
+                }
+
+                const bannerData = {
+                    title: document.getElementById('bannerTitle').value || '',
+                    image_url: imageUrl,
+                    link_url: document.getElementById('bannerLinkUrl').value || '',
+                    sort_order: parseInt(document.getElementById('bannerSortOrder').value) || 1,
+                    is_active: document.getElementById('bannerIsActive').value === 'true',
+                    image_position: document.getElementById('bannerImagePosition').value || 'center'
+                };
+
+                let error;
+                if (id) {
+                    const res = await supabase.from('banners').update(bannerData).eq('id', id);
+                    error = res.error;
+                } else {
+                    const res = await supabase.from('banners').insert([bannerData]);
+                    error = res.error;
+                }
+
+                if (error) throw error;
+
+                alert('บันทึกสำเร็จ!');
+                closeBannerModal();
+                loadBanners();
+            } catch (e) {
+                alert('เกิดข้อผิดพลาด: ' + e.message);
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'บันทึก';
+            }
+        });
+
+        // ========== Staff Management ==========
+        let allStaffMap = new Map();
+
+        async function loadStaff() {
+            const tableBody = document.getElementById('staffTableBody');
+            tableBody.innerHTML = '<tr><td colspan="5" class="text-center py-4">กำลังโหลดข้อมูล...</td></tr>';
+
+            try {
+                const { data, error } = await supabase
+                    .from('staff')
+                    .select('*')
+                    .order('sort_order', { ascending: true });
+
+                if (error) throw error;
+
+                tableBody.innerHTML = '';
+                allStaffMap.clear();
+
+                if (!data || data.length === 0) {
+                    tableBody.innerHTML = '<tr><td colspan="5" class="text-center py-4">ยังไม่มีข้อมูลบุคลากร</td></tr>';
+                    return;
+                }
+
+                data.forEach(item => {
+                    allStaffMap.set(String(item.id), item);
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td class="px-4 py-3">
+                            <img src="${item.photo_url || 'https://via.placeholder.com/60?text=No'}" 
+                                 class="w-12 h-12 rounded-full object-cover bg-gray-200"
+                                 onerror="this.src='https://via.placeholder.com/60?text=No'">
+                        </td>
+                        <td class="px-4 py-3 text-sm font-medium">${item.name}</td>
+                        <td class="px-4 py-3 text-sm text-gray-500">${item.position || '-'}</td>
+                        <td class="px-4 py-3 text-sm text-gray-400">${item.sort_order || '-'}</td>
+                        <td class="px-4 py-3 text-sm">
+                            <button onclick="editStaff('${item.id}')" class="text-indigo-600 hover:text-indigo-900 mr-2">แก้ไข</button>
+                            <button onclick="deleteStaff('${item.id}')" class="text-red-600 hover:text-red-900">ลบ</button>
+                        </td>
+                    `;
+                    tableBody.appendChild(tr);
+                });
+            } catch (e) {
+                console.error('Error loading staff:', e);
+                tableBody.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-red-500">Error: ${e.message}</td></tr>`;
+            }
+        }
+
+        window.openStaffModal = () => document.getElementById('staffModal').classList.remove('hidden');
+
+        window.closeStaffModal = () => {
+            document.getElementById('staffModal').classList.add('hidden');
+            document.getElementById('staffForm').reset();
+            document.getElementById('editStaffId').value = '';
+            document.getElementById('staffPhotoUrl').value = '';
+            document.getElementById('staffModalTitle').textContent = 'เพิ่มบุคลากร';
+            document.getElementById('staffSortOrder').value = '10';
+            document.getElementById('staffPhotoPreview').src = 'https://via.placeholder.com/80?text=No+Photo';
+            document.getElementById('staffPhotoFile').value = '';
+            document.getElementById('staffPhotoUrlInput').value = '';
+        };
+
+        // Staff photo preview
+        document.getElementById('staffPhotoFile').addEventListener('change', function (e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    document.getElementById('staffPhotoPreview').src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Upload photo to Cloudinary
+        const CLOUDINARY_CLOUD_NAME = 'dlisgusfp';
+        const CLOUDINARY_UPLOAD_PRESET = 'school_uploads'; // ต้องสร้างใน Cloudinary Settings
+        const CLOUDINARY_API_KEY = '792616562269569'; // ใส่ API Key จาก Cloudinary Dashboard
+
+        // Cloudinary Media Library Browser
+        let currentBrowserTarget = null;
+
+        window.openCloudinaryBrowser = function (target) {
+            currentBrowserTarget = target;
+
+            // Check if API Key is set
+            if (!CLOUDINARY_API_KEY) {
+                alert('⚠️ กรุณาตั้งค่า API Key ใน admin.html\n\nวิธีทำ:\n1. ไปที่ Cloudinary Dashboard → Settings → Access Keys\n2. คัดลอก API Key\n3. วางใน CLOUDINARY_API_KEY ที่บรรทัด 1028');
+                return;
+            }
+
+            if (typeof cloudinary === 'undefined' || !cloudinary.createMediaLibrary) {
+                alert('Cloudinary Media Library Widget ยังไม่โหลดเสร็จ กรุณารีเฟรชหน้า');
+                return;
+            }
+
+            const mediaLibrary = cloudinary.createMediaLibrary({
+                cloud_name: CLOUDINARY_CLOUD_NAME,
+                api_key: CLOUDINARY_API_KEY,
+                multiple: false,
+                max_files: 1
+            }, {
+                insertHandler: function (data) {
+                    if (data && data.assets && data.assets.length > 0) {
+                        const asset = data.assets[0];
+                        const url = asset.secure_url;
+
+                        if (currentBrowserTarget === 'staff') {
+                            document.getElementById('staffPhotoUrlInput').value = url;
+                            document.getElementById('staffPhotoPreview').src = url;
+                        } else if (currentBrowserTarget === 'news') {
+                            document.getElementById('newsCoverUrlInput').value = url;
+                            document.getElementById('coverPreview').src = url;
+                            document.getElementById('coverPreview').classList.remove('hidden');
+                        }
+                    }
+                }
+            });
+
+            mediaLibrary.show();
+        };
+
+        async function uploadStaffPhoto(file) {
+            // Compress image before upload (400px for staff photos, 80% quality)
+            const compressedFile = await compressImage(file, 400, 0.80);
+
+            // Generate unique public_id to prevent caching issues
+            const uniqueId = `staff_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`;
+
+            const formData = new FormData();
+            formData.append('file', compressedFile);
+            formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+            formData.append('folder', 'staff');
+            formData.append('public_id', uniqueId); // ใช้ชื่อไฟล์ใหม่ทุกครั้ง
+
+            const response = await fetch(
+                `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`,
+                { method: 'POST', body: formData }
+            );
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error?.message || 'Upload failed');
+            }
+
+            const data = await response.json();
+            return data.secure_url; // Return the HTTPS URL
+        }
+
+        window.editStaff = (id) => {
+            const data = allStaffMap.get(String(id));
+            if (!data) return;
+
+            document.getElementById('editStaffId').value = id;
+            document.getElementById('staffName').value = data.name || '';
+            document.getElementById('staffPosition').value = data.position || '';
+            document.getElementById('staffCategory').value = data.category || 'executive';
+            document.getElementById('staffPhotoUrl').value = data.photo_url || '';
+            document.getElementById('staffSortOrder').value = data.sort_order || 10;
+
+            // Show existing photo
+            document.getElementById('staffPhotoPreview').src = data.photo_url || 'https://via.placeholder.com/80?text=No+Photo';
+
+            document.getElementById('staffModalTitle').textContent = 'แก้ไขข้อมูลบุคลากร';
+            openStaffModal();
+        };
+
+        window.deleteStaff = async (id) => {
+            if (!confirm("ยืนยันการลบบุคลากรนี้?")) return;
+            try {
+                const { error } = await supabase.from('staff').delete().eq('id', id);
+                if (error) throw error;
+                loadStaff();
+            } catch (e) {
+                alert('เกิดข้อผิดพลาด: ' + e.message);
+            }
+        };
+
+        // Staff Form Submission
+        document.getElementById('staffForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const form = e.target;
+            const submitBtn = form.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'กำลังบันทึก...';
+
+            const formData = new FormData(form);
+            const id = formData.get('id');
+            const photoFile = document.getElementById('staffPhotoFile').files[0];
+            const urlInput = document.getElementById('staffPhotoUrlInput').value.trim();
+
+            try {
+                let photoUrl = formData.get('photo_url'); // Keep existing URL
+
+                // Priority: 1. New URL input, 2. New file upload, 3. Keep existing
+                if (urlInput) {
+                    photoUrl = urlInput;
+                } else if (photoFile) {
+                    submitBtn.textContent = 'กำลังอัพโหลดรูป...';
+                    photoUrl = await uploadStaffPhoto(photoFile);
+                }
+
+                const staffData = {
+                    name: formData.get('name'),
+                    position: formData.get('position'),
+                    category: formData.get('category'),
+                    photo_url: photoUrl,
+                    sort_order: parseInt(formData.get('sort_order')) || 10
+                };
+
+                let error;
+                if (id) {
+                    const res = await supabase.from('staff').update(staffData).eq('id', id);
+                    error = res.error;
+                } else {
+                    const res = await supabase.from('staff').insert([staffData]);
+                    error = res.error;
+                }
+
+                if (error) throw error;
+
+                alert('บันทึกข้อมูลบุคลากรเรียบร้อย ✅');
+                closeStaffModal();
+                loadStaff();
+
+            } catch (error) {
+                console.error(error);
+                alert('เกิดข้อผิดพลาด: ' + error.message);
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'บันทึก';
+            }
+        });
+
+        // ========== Donation Management ==========
+        async function loadDonationSettings() {
+            try {
+                const { data, error } = await supabase
+                    .from('donation_settings')
+                    .select('*')
+                    .single();
+
+                if (error && error.code !== 'PGRST116') throw error; // PGRST116 = no rows
+
+                if (data) {
+                    document.getElementById('qrCodeUrl').value = data.qr_code_url || '';
+                    document.getElementById('accountName').value = data.account_name || '';
+                    document.getElementById('bankName').value = data.bank_name || '';
+                    document.getElementById('accountNumber').value = data.account_number || '';
+                    document.getElementById('projectName').value = data.project_name || '';
+                    document.getElementById('totalAmount').value = data.total_amount || 0;
+                    document.getElementById('goalAmount').value = data.goal_amount || 500000;
+                    document.getElementById('donorCount').value = data.donor_count || 0;
+                }
+            } catch (e) {
+                console.error('Error loading donation settings:', e);
+            }
+        }
+
+        async function loadDonors() {
+            const tableBody = document.getElementById('donorsTableBody');
+            tableBody.innerHTML = '<tr><td colspan="4" class="text-center py-4">กำลังโหลด...</td></tr>';
+
+            try {
+                const { data, error } = await supabase
+                    .from('donors')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                tableBody.innerHTML = '';
+
+                if (!data || data.length === 0) {
+                    tableBody.innerHTML = '<tr><td colspan="4" class="text-center py-4 text-gray-500">ยังไม่มีรายการ</td></tr>';
+                    return;
+                }
+
+                data.forEach(d => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td class="px-4 py-2 text-sm">${d.name || 'ไม่ระบุชื่อ'}</td>
+                        <td class="px-4 py-2 text-sm font-medium text-green-600">฿${Number(d.amount).toLocaleString()}</td>
+                        <td class="px-4 py-2 text-xs text-gray-500">${new Date(d.created_at).toLocaleDateString('th-TH')}</td>
+                        <td class="px-4 py-2 text-center">
+                            <button onclick="deleteDonor('${d.id}')" class="text-red-500 hover:text-red-700">🗑️</button>
+                        </td>
+                    `;
+                    tableBody.appendChild(tr);
+                });
+            } catch (e) {
+                console.error('Error loading donors:', e);
+                tableBody.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-red-500">Error: ${e.message}</td></tr>`;
+            }
+        }
+
+        // Donation Settings Form
+        document.getElementById('donationSettingsForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button[type="submit"]');
+            btn.disabled = true;
+            btn.textContent = 'กำลังบันทึก...';
+
+            try {
+                const settingsData = {
+                    qr_code_url: document.getElementById('qrCodeUrl').value,
+                    account_name: document.getElementById('accountName').value,
+                    bank_name: document.getElementById('bankName').value,
+                    account_number: document.getElementById('accountNumber').value,
+                    project_name: document.getElementById('projectName').value,
+                    total_amount: parseInt(document.getElementById('totalAmount').value) || 0,
+                    goal_amount: parseInt(document.getElementById('goalAmount').value) || 500000,
+                    donor_count: parseInt(document.getElementById('donorCount').value) || 0
+                };
+
+                // Upsert (insert or update)
+                const { error } = await supabase
+                    .from('donation_settings')
+                    .upsert(settingsData, { onConflict: 'id' });
+
+                if (error) throw error;
+
+                alert('บันทึกการตั้งค่าเรียบร้อย ✅');
+            } catch (error) {
+                console.error(error);
+                alert('เกิดข้อผิดพลาด: ' + error.message);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '💾 บันทึกการตั้งค่า';
+            }
+        });
+
+        // Donor Modal
+        window.openDonorModal = () => document.getElementById('donorModal').classList.remove('hidden');
+        window.closeDonorModal = () => {
+            document.getElementById('donorModal').classList.add('hidden');
+            document.getElementById('donorForm').reset();
+        };
+
+        window.deleteDonor = async (id) => {
+            if (!confirm('ยืนยันการลบ?')) return;
+            try {
+                const { error } = await supabase.from('donors').delete().eq('id', id);
+                if (error) throw error;
+                loadDonors();
+            } catch (e) {
+                alert('Error: ' + e.message);
+            }
+        };
+
+        // Donor Form
+        document.getElementById('donorForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button[type="submit"]');
+            btn.disabled = true;
+            btn.textContent = 'กำลังบันทึก...';
+
+            try {
+                const donorData = {
+                    name: document.getElementById('donorName').value || 'ไม่ระบุชื่อ',
+                    amount: parseInt(document.getElementById('donorAmount').value) || 0,
+                    message: document.getElementById('donorMessage').value || ''
+                };
+
+                const { error } = await supabase.from('donors').insert([donorData]);
+                if (error) throw error;
+
+                alert('เพิ่มผู้บริจาคเรียบร้อย ✅');
+                closeDonorModal();
+                loadDonors();
+
+                // Update donor count
+                const countInput = document.getElementById('donorCount');
+                countInput.value = parseInt(countInput.value) + 1;
+
+            } catch (error) {
+                console.error(error);
+                alert('เกิดข้อผิดพลาด: ' + error.message);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'บันทึก';
+            }
+        });
+
+        // ========== Events Management ==========
+        let allEventsMap = new Map();
+
+        async function loadEvents() {
+            const tableBody = document.getElementById('eventsTableBody');
+            tableBody.innerHTML = '<tr><td colspan="4" class="text-center py-4">กำลังโหลดข้อมูล...</td></tr>';
+
+            try {
+                const { data, error } = await supabase
+                    .from('events')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                tableBody.innerHTML = '';
+                allEventsMap.clear();
+
+                if (!data || data.length === 0) {
+                    tableBody.innerHTML = '<tr><td colspan="4" class="text-center py-4">ไม่พบกิจกรรม</td></tr>';
+                    return;
+                }
+
+                data.forEach(item => {
+                    allEventsMap.set(String(item.id), item);
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="text-lg font-bold text-blue-600">${item.day || '-'}</span>
+                            <span class="text-sm text-gray-500 ml-1">${item.month || ''}</span>
+                        </td>
+                        <td class="px-6 py-4 text-sm text-gray-900">${item.title}</td>
+                        <td class="px-6 py-4 text-sm text-gray-500">${item.place || '-'}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <button onclick="window.editEvent('${item.id}')" class="text-indigo-600 hover:text-indigo-900 mr-3">แก้ไข</button>
+                            <button onclick="window.deleteEvent('${item.id}')" class="text-red-600 hover:text-red-900">ลบ</button>
+                        </td>
+                    `;
+                    tableBody.appendChild(tr);
+                });
+            } catch (e) {
+                console.error(e);
+                tableBody.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-red-500">เกิดข้อผิดพลาด: ${e.message}</td></tr>`;
+            }
+        }
+
+        // Event Modal Functions
+        window.openEventModal = () => document.getElementById('eventModal').classList.remove('hidden');
+
+        window.closeEventModal = () => {
+            document.getElementById('eventModal').classList.add('hidden');
+            document.getElementById('eventForm').reset();
+            document.getElementById('editEventId').value = '';
+            document.getElementById('eventModalTitle').textContent = 'เพิ่มกิจกรรมใหม่';
+        };
+
+        window.editEvent = (id) => {
+            const data = allEventsMap.get(String(id));
+            if (!data) return;
+
+            document.getElementById('editEventId').value = id;
+            document.getElementById('eventDay').value = data.day || '';
+            document.getElementById('eventMonth').value = data.month || '';
+            document.getElementById('eventTitle').value = data.title || '';
+            document.getElementById('eventPlace').value = data.place || '';
+
+            document.getElementById('eventModalTitle').textContent = 'แก้ไขกิจกรรม';
+            openEventModal();
+        };
+
+        window.deleteEvent = async (id) => {
+            if (!confirm("ยืนยันการลบกิจกรรมนี้?")) return;
+            try {
+                const { error } = await supabase.from('events').delete().eq('id', id);
+                if (error) throw error;
+                loadEvents();
+            } catch (e) {
+                alert('เกิดข้อผิดพลาด: ' + e.message);
+            }
+        };
+
+        // Event Form Submission
+        document.getElementById('eventForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const form = e.target;
+            const submitBtn = form.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'กำลังบันทึก...';
+
+            const formData = new FormData(form);
+            const id = formData.get('id');
+
+            try {
+                const eventData = {
+                    day: formData.get('day'),
+                    month: formData.get('month'),
+                    title: formData.get('title'),
+                    place: formData.get('place')
+                };
+
+                let error;
+                if (id) {
+                    const res = await supabase.from('events').update(eventData).eq('id', id);
+                    error = res.error;
+                } else {
+                    const res = await supabase.from('events').insert([eventData]);
+                    error = res.error;
+                }
+
+                if (error) throw error;
+
+                alert('บันทึกกิจกรรมเรียบร้อย ✅');
+                closeEventModal();
+                loadEvents();
+
+            } catch (error) {
+                console.error(error);
+                alert('เกิดข้อผิดพลาด: ' + error.message);
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'บันทึก';
+            }
+        });
+
+    </script>
+</body>
+
+</html>

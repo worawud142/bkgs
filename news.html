@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="th">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ข่าว & ประชาสัมพันธ์ – รายละเอียด</title>
+  <meta name="description" content="รายละเอียดข่าวจากโรงเรียนบ้านขัวก่าย" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['IBM Plex Sans Thai', 'IBM Plex Sans', 'ui-sans-serif', 'system-ui'] },
+          colors: { brand: { 50: '#eff6ff', 100: '#dbeafe', 200: '#bfdbfe', 300: '#93c5fd', 400: '#60a5fa', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8', 800: '#1e40af', 900: '#1e3a8a' } },
+          boxShadow: { soft: '0 10px 30px rgba(0,0,0,0.08)' }
+        }
+      }
+    }
+  </script>
+  <style>
+    html {
+      scroll-behavior: smooth
+    }
+
+    ::-webkit-scrollbar {
+      width: 10px;
+      height: 10px
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 999px
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #f1f5f9
+    }
+
+    .prose p {
+      margin: 0.75rem 0
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/config.js"></script>
+</head>
+
+<body class="font-sans text-slate-800 bg-slate-50">
+  <header class="bg-white/90 backdrop-blur sticky top-0 z-50 shadow">
+    <div class="max-w-6xl mx-auto px-4">
+      <div class="flex items-center justify-between h-16">
+        <a href="index.html" class="flex items-center gap-3">
+          <img
+            src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Emblem_of_the_Ministry_of_Education_of_Thailand.svg/120px-Emblem_of_the_Ministry_of_Education_of_Thailand.svg.png"
+            class="h-9 w-9" alt="ตราเสมา" />
+          <div class="leading-tight">
+            <div class="text-base font-semibold text-brand-800">โรงเรียนบ้านขัวก่าย</div>
+            <div class="text-[11px] text-slate-500">Ban Khua Kai School</div>
+          </div>
+        </a>
+        <nav class="hidden md:flex items-center gap-6 text-[15px]">
+          <a href="index.html#news" class="hover:text-brand-700">ข่าว/ประกาศ</a>
+          <a href="index.html#events" class="hover:text-brand-700">กิจกรรม</a>
+          <a href="index.html#contact" class="hover:text-brand-700">ติดต่อ</a>
+          <a href="index.html#donate"
+            class="inline-flex items-center gap-1.5 bg-brand-600 hover:bg-brand-700 text-white px-3 py-1.5 rounded-full shadow-soft">ร่วมสนับสนุน</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-3xl mx-auto px-4 py-10">
+    <a href="index.html#news" class="text-sm text-brand-700">&larr; กลับไปหน้าหลัก</a>
+
+    <article id="newsArticle" class="mt-4 bg-white rounded-2xl border shadow-soft overflow-hidden">
+      <div class="h-52 bg-slate-200 overflow-hidden">
+        <img id="cover" class="w-full h-full object-cover" alt="ภาพปกข่าว">
+      </div>
+      <div class="p-6">
+        <div class="flex items-center gap-2 text-xs text-slate-500">
+          <span id="date"></span>
+          <span class="inline-block w-1.5 h-1.5 rounded-full bg-slate-300"></span>
+          <span id="tag" class="px-2 py-0.5 border rounded-full bg-slate-50"></span>
+        </div>
+        <h1 id="title" class="mt-2 text-2xl font-bold text-brand-900">หัวข้อข่าว</h1>
+        <p id="desc" class="mt-2 text-slate-600"></p>
+        <div id="content" class="prose max-w-none mt-4 text-[15px] leading-relaxed"></div>
+        <div class="mt-6 flex gap-3">
+          <button id="shareBtn" class="px-3 py-1.5 border rounded">แชร์ลิงก์</button>
+          <a id="fbBtn" target="_blank" rel="noopener" class="px-3 py-1.5 border rounded" href="#">เปิดใน Facebook</a>
+        </div>
+      </div>
+    </article>
+
+    <section class="mt-10">
+      <h2 class="text-lg font-semibold text-brand-800">ข่าวอื่น ๆ</h2>
+      <div id="moreList" class="mt-3 grid gap-2 text-sm"></div>
+    </section>
+  </main>
+
+  <footer class="mt-10 py-6 text-center text-xs text-slate-500">
+    © <span id="year"></span> Ban Khua Kai School
+  </footer>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    function q(name) { return new URL(location.href).searchParams.get(name); }
+    const idParam = q('id');
+    const slugParam = q('slug');
+
+    // Mapped fields helper
+    function mapNewsItem(item) {
+      if (!item) return null;
+      return {
+        id: item.id,
+        slug: item.slug,
+        date: item.event_date || item.date || '',
+        tag: item.tag || 'ข่าว',
+        title: item.title,
+        desc: item.description || item.desc || '',
+        content: item.content || '',
+        cover: item.cover_image || item.cover || 'https://via.placeholder.com/800x400',
+        coverPosition: item.cover_position || 'center'
+      };
+    }
+
+    function renderArticle(item) {
+      if (!item) { document.getElementById('newsArticle').innerHTML = '<div class="p-6">ไม่พบบทความที่ต้องการ</div>'; return; }
+
+      const data = mapNewsItem(item);
+
+      document.title = data.title + ' – ข่าว & ประชาสัมพันธ์';
+      document.getElementById('cover').src = data.cover;
+      document.getElementById('cover').alt = data.title;
+      document.getElementById('cover').style.objectPosition = data.coverPosition;
+      document.getElementById('date').textContent = data.date;
+      document.getElementById('tag').textContent = data.tag;
+      document.getElementById('title').textContent = data.title;
+      document.getElementById('desc').textContent = data.desc;
+
+      // Allow img tags but sanitize other HTML for security
+      let rawContent = data.content || '';
+
+      // First, unescape any HTML entities for img tags that might have been escaped
+      // This handles cases where &lt;img...&gt; was stored instead of <img...>
+      rawContent = rawContent
+        .replace(/&lt;img/gi, '<img')
+        .replace(/&gt;/g, function (match, offset, string) {
+          // Only replace &gt; that are likely part of img tags
+          const before = string.substring(Math.max(0, offset - 200), offset);
+          if (before.includes('<img')) {
+            return '>';
+          }
+          return match;
+        });
+
+      // Simple approach: Replace img tags with placeholders, then restore them
+      const imgPlaceholders = [];
+      const imgRegex = /<img[^>]+>/gi;
+
+      // Extract and store all img tags
+      let processedContent = rawContent.replace(imgRegex, (match) => {
+        const index = imgPlaceholders.length;
+        // Add responsive styling to img tags (avoid duplicate class)
+        let styledImg = match;
+        if (!match.includes('class=')) {
+          styledImg = match.replace(/<img/i, '<img class="max-w-full rounded-lg my-4 mx-auto block"');
+        }
+        imgPlaceholders.push(styledImg);
+        return `__IMG_PLACEHOLDER_${index}__`;
+      });
+
+      // Format paragraphs (split by double newlines)
+      processedContent = processedContent
+        .split(/\n{2,}/)
+        .map(p => {
+          const trimmed = p.trim();
+          if (!trimmed) return '';
+          // Check if this paragraph contains only a placeholder
+          if (trimmed.match(/^__IMG_PLACEHOLDER_\d+__$/)) {
+            return trimmed; // Don't wrap placeholders in <p>
+          }
+          // Handle inline placeholders within text
+          if (trimmed.includes('__IMG_PLACEHOLDER_')) {
+            return trimmed.replace(/\n/g, '<br>');
+          }
+          return `<p>${trimmed.replace(/\n/g, '<br>')}</p>`;
+        })
+        .filter(p => p)
+        .join('\n');
+
+      // Restore img tags from placeholders
+      imgPlaceholders.forEach((img, i) => {
+        processedContent = processedContent.replace(`__IMG_PLACEHOLDER_${i}__`, img);
+      });
+
+      document.getElementById('content').innerHTML = processedContent;
+
+      // Share buttons
+      const shareUrl = location.href;
+      document.getElementById('shareBtn').onclick = async () => {
+        try { await navigator.clipboard.writeText(shareUrl); alert('คัดลอกลิงก์แล้ว'); } catch (e) { prompt('คัดลอกลิงก์:', shareUrl); }
+      };
+      document.getElementById('fbBtn').href = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(shareUrl);
+    }
+
+    function renderMore(list, currentId) {
+      const wrap = document.getElementById('moreList'); wrap.innerHTML = '';
+      list.filter(x => String(x.id) !== String(currentId)).slice(0, 5).forEach(n => {
+        const item = mapNewsItem(n);
+        const a = document.createElement('a');
+        a.className = 'block p-3 bg-white rounded-xl border hover:shadow-soft';
+        a.href = 'news.html?id=' + item.id; // prioritize ID over slug for simplicity here
+        a.textContent = item.title;
+        wrap.appendChild(a);
+      });
+    }
+
+    (async () => {
+      let list = [];
+      let item = null;
+
+      try {
+        // Fetch specific item
+        if (idParam || slugParam) {
+          let query = supabase.from('news').select('*');
+          if (idParam) query = query.eq('id', idParam);
+          else if (slugParam) query = query.eq('slug', slugParam);
+
+          const { data, error } = await query.single();
+          if (!error && data) {
+            item = data;
+          }
+        }
+
+        // Fetch list for "More news"
+        const { data: newsList, error: listError } = await supabase
+          .from('news')
+          .select('*')
+          .order('created_at', { ascending: false })
+          .limit(6);
+
+        if (!listError) {
+          list = newsList;
+        }
+
+        if (!item && !idParam && !slugParam && list.length > 0) {
+          item = list[0];
+        }
+
+      } catch (e) {
+        console.error("Supabase Error:", e);
+      }
+
+      renderArticle(item);
+      renderMore(list, item ? item.id : null);
+    })();
+  </script>
+</body>
+
+</html>

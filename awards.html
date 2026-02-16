@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="th">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>🏆 ผลงานดีเด่น – โรงเรียนบ้านขัวก่าย</title>
+  <meta name="description" content="ผลงานและรางวัลเกียรติยศของโรงเรียนบ้านขัวก่าย" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['IBM Plex Sans Thai', 'IBM Plex Sans', 'ui-sans-serif', 'system-ui'] },
+          colors: {
+            brand: { 50: '#eff6ff', 100: '#dbeafe', 200: '#bfdbfe', 300: '#93c5fd', 400: '#60a5fa', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8', 800: '#1e40af', 900: '#1e3a8a' },
+            amber: { 50: '#fffbeb', 100: '#fef3c7', 200: '#fde68a', 300: '#fcd34d', 400: '#fbbf24', 500: '#f59e0b', 600: '#d97706' }
+          },
+          boxShadow: { soft: '0 10px 30px rgba(0,0,0,0.08)' }
+        }
+      }
+    }
+  </script>
+  <style>
+    html {
+      scroll-behavior: smooth
+    }
+
+    ::-webkit-scrollbar {
+      width: 10px;
+      height: 10px
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 999px
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #f1f5f9
+    }
+
+    .award-card {
+      transition: all 0.3s ease;
+    }
+
+    .award-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/config.js"></script>
+</head>
+
+<body class="font-sans text-slate-800 bg-slate-50">
+  <header class="bg-white/90 backdrop-blur sticky top-0 z-50 shadow">
+    <div class="max-w-6xl mx-auto px-4">
+      <div class="flex items-center justify-between h-16">
+        <a href="index.html" class="flex items-center gap-3">
+          <img
+            src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Emblem_of_the_Ministry_of_Education_of_Thailand.svg/120px-Emblem_of_the_Ministry_of_Education_of_Thailand.svg.png"
+            class="h-9 w-9" alt="ตราเสมา" />
+          <div class="leading-tight">
+            <div class="text-base font-semibold text-brand-800">โรงเรียนบ้านขัวก่าย</div>
+            <div class="text-[11px] text-slate-500">Ban Khua Kai School</div>
+          </div>
+        </a>
+        <nav class="hidden md:flex items-center gap-6 text-[15px]">
+          <a href="index.html" class="hover:text-brand-700">หน้าแรก</a>
+          <a href="index.html#news" class="hover:text-brand-700">ข่าว/ประกาศ</a>
+          <a href="index.html#events" class="hover:text-brand-700">กิจกรรม</a>
+          <a href="awards.html" class="text-brand-700 font-semibold">🏆 ผลงานดีเด่น</a>
+          <a href="index.html#contact" class="hover:text-brand-700">ติดต่อ</a>
+          <a href="index.html#donate"
+            class="inline-flex items-center gap-1.5 bg-brand-600 hover:bg-brand-700 text-white px-3 py-1.5 rounded-full shadow-soft">ร่วมสนับสนุน</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-6xl mx-auto px-4 py-10">
+    <a href="index.html" class="text-sm text-brand-700">&larr; กลับไปหน้าหลัก</a>
+
+    <!-- Header -->
+    <div class="mt-6 text-center">
+      <span class="text-6xl mb-4 block">🏆</span>
+      <h1 class="text-3xl md:text-4xl font-bold text-brand-900">ผลงานดีเด่น</h1>
+      <p class="mt-2 text-slate-600 max-w-2xl mx-auto">ความสำเร็จและรางวัลเกียรติยศของโรงเรียนบ้านขัวก่าย สพป.สกลนคร เขต 3</p>
+    </div>
+
+    <!-- Awards Grid -->
+    <div id="awardsGrid" class="mt-10 grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- Content loaded by JavaScript -->
+    </div>
+
+    <!-- Loading State -->
+    <div id="loadingState" class="mt-10 text-center py-10">
+      <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-brand-600"></div>
+      <p class="mt-2 text-slate-500">กำลังโหลดข้อมูล...</p>
+    </div>
+  </main>
+
+  <footer class="bg-brand-900 text-white mt-16">
+    <div class="max-w-6xl mx-auto px-4 py-8">
+      <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+        <div class="text-center md:text-left">
+          <div class="font-semibold">โรงเรียนบ้านขัวก่าย</div>
+          <div class="text-sm text-white/80">สพป.สกลนคร เขต 3</div>
+        </div>
+        <div class="text-sm text-white/80">
+          © <span id="year"></span> Ban Khua Kai School
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script type="module">
+    // Year
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Awards Rendering
+    const awardEmojis = ['🥇', '🏅', '🎖️', '🏆', '⭐', '🌟', '🎊', '🎉', '👏', '💎'];
+    const fallbackAwards = [
+      { title: 'รางวัลโรงเรียนดีเด่นระดับประเทศ', description: 'ได้รับคัดเลือกเป็นโรงเรียนต้นแบบด้านนวัตกรรมการศึกษา ปี 2567' },
+      { title: 'รางวัลชนะเลิศการแข่งขันหุ่นยนต์', description: 'นักเรียนคว้ารางวัลชนะเลิศระดับประเทศ การแข่งขันหุ่นยนต์ FLL 2024' },
+      { title: 'รางวัลโรงเรียนสีเขียว', description: 'ได้รับรางวัลโรงเรียนสีเขียวระดับทอง จากกระทรวงสาธารณสุข' },
+      { title: 'รางวัลครูดีเด่น', description: 'ครูประจำโรงเรียนได้รับรางวัลครูดีเด่นระดับภาคตะวันออกเฉียงเหนือ' },
+      { title: 'รางวัลการประกวดวงดนตรีไทย', description: 'วงดนตรีไทยของโรงเรียนได้รับรางวัลชนะเลิศระดับจังหวัด' },
+      { title: 'รางวัลนักเรียนคนดีศรีสังคม', description: 'นักเรียนได้รับรางวัลคนดีศรีสังคมระดับภาคตะวันออกเฉียงเหนือ' },
+    ];
+
+    function renderAwards(list) {
+      const grid = document.getElementById('awardsGrid');
+      const loading = document.getElementById('loadingState');
+      
+      if (loading) loading.style.display = 'none';
+      if (!grid) return;
+      
+      grid.innerHTML = '';
+      
+      if (!list || list.length === 0) {
+        grid.innerHTML = '<p class="text-center text-slate-500 py-8 col-span-full">ยังไม่มีข้อมูลผลงาน</p>';
+        return;
+      }
+
+      list.forEach((item, i) => {
+        const div = document.createElement('div');
+        div.className = 'award-card bg-gradient-to-br from-amber-50 to-white border border-amber-200 rounded-2xl p-6';
+        div.innerHTML = `
+          <div class="text-4xl mb-3">${awardEmojis[i % awardEmojis.length]}</div>
+          <h3 class="font-semibold text-brand-800 text-lg">${item.title}</h3>
+          <p class="text-sm text-slate-500 mt-2">${item.description || ''}</p>
+        `;
+        grid.appendChild(div);
+      });
+    }
+
+    // Load awards from Supabase
+    try {
+      const { data: awardsList, error } = await supabase
+        .from('awards')
+        .select('*')
+        .order('sort_order', { ascending: true });
+
+      if (error) throw error;
+
+      if (awardsList && awardsList.length > 0) {
+        renderAwards(awardsList);
+      } else {
+        renderAwards(fallbackAwards);
+      }
+    } catch (e) {
+      console.warn('Awards Error (using fallback):', e);
+      renderAwards(fallbackAwards);
+    }
+  </script>
+</body>
+
+</html>
