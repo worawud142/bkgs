@@ -30,3 +30,29 @@ CREATE TABLE IF NOT EXISTS news (
 INSERT INTO admin_users (email, password_hash) VALUES 
 ('admin@test.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi')
 ON DUPLICATE KEY UPDATE id=id;
+
+-- ============================================
+-- Supabase (PostgreSQL) - Documents Table
+-- Run this SQL in Supabase SQL Editor
+-- ============================================
+-- CREATE TABLE documents (
+--     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+--     title TEXT NOT NULL,
+--     file_url TEXT,
+--     sort_order INT DEFAULT 1,
+--     created_at TIMESTAMPTZ DEFAULT NOW()
+-- );
+--
+-- ALTER TABLE documents ENABLE ROW LEVEL SECURITY;
+--
+-- CREATE POLICY "Allow public read" ON documents
+--     FOR SELECT USING (true);
+--
+-- CREATE POLICY "Allow authenticated insert" ON documents
+--     FOR INSERT WITH CHECK (auth.role() = 'authenticated');
+--
+-- CREATE POLICY "Allow authenticated update" ON documents
+--     FOR UPDATE USING (auth.role() = 'authenticated');
+--
+-- CREATE POLICY "Allow authenticated delete" ON documents
+--     FOR DELETE USING (auth.role() = 'authenticated');

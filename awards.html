@@ -51,7 +51,7 @@
 
     .award-card:hover {
       transform: translateY(-4px);
-      box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
     }
   </style>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -63,9 +63,7 @@
     <div class="max-w-6xl mx-auto px-4">
       <div class="flex items-center justify-between h-16">
         <a href="index.html" class="flex items-center gap-3">
-          <img
-            src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Emblem_of_the_Ministry_of_Education_of_Thailand.svg/120px-Emblem_of_the_Ministry_of_Education_of_Thailand.svg.png"
-            class="h-9 w-9" alt="ตราเสมา" />
+          <img src="img/logo.jpg" class="h-9 w-9" alt="ตราเสมา" />
           <div class="leading-tight">
             <div class="text-base font-semibold text-brand-800">โรงเรียนบ้านขัวก่าย</div>
             <div class="text-[11px] text-slate-500">Ban Khua Kai School</div>
@@ -75,6 +73,8 @@
           <a href="index.html" class="hover:text-brand-700">หน้าแรก</a>
           <a href="index.html#news" class="hover:text-brand-700">ข่าว/ประกาศ</a>
           <a href="index.html#events" class="hover:text-brand-700">กิจกรรม</a>
+          <a href="gallery.html" class="hover:text-brand-700">แกลเลอรี</a>
+          <a href="staff.html" class="hover:text-brand-700">บุคลากร</a>
           <a href="awards.html" class="text-brand-700 font-semibold">🏆 ผลงานดีเด่น</a>
           <a href="index.html#contact" class="hover:text-brand-700">ติดต่อ</a>
           <a href="index.html#donate"
@@ -91,7 +91,8 @@
     <div class="mt-6 text-center">
       <span class="text-6xl mb-4 block">🏆</span>
       <h1 class="text-3xl md:text-4xl font-bold text-brand-900">ผลงานดีเด่น</h1>
-      <p class="mt-2 text-slate-600 max-w-2xl mx-auto">ความสำเร็จและรางวัลเกียรติยศของโรงเรียนบ้านขัวก่าย สพป.สกลนคร เขต 3</p>
+      <p class="mt-2 text-slate-600 max-w-2xl mx-auto">ความสำเร็จและรางวัลเกียรติยศของโรงเรียนบ้านขัวก่าย สพป.สกลนคร เขต
+        3</p>
     </div>
 
     <!-- Awards Grid -->
@@ -138,12 +139,12 @@
     function renderAwards(list) {
       const grid = document.getElementById('awardsGrid');
       const loading = document.getElementById('loadingState');
-      
+
       if (loading) loading.style.display = 'none';
       if (!grid) return;
-      
+
       grid.innerHTML = '';
-      
+
       if (!list || list.length === 0) {
         grid.innerHTML = '<p class="text-center text-slate-500 py-8 col-span-full">ยังไม่มีข้อมูลผลงาน</p>';
         return;

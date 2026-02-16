@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="th">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>📸 แกลเลอรีกิจกรรม – โรงเรียนบ้านขัวก่าย</title>
+    <meta name="description" content="ประมวลภาพกิจกรรมต่างๆ ของโรงเรียนบ้านขัวก่าย" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['IBM Plex Sans Thai', 'IBM Plex Sans', 'ui-sans-serif', 'system-ui'] },
+                    colors: {
+                        brand: { 50: '#eff6ff', 100: '#dbeafe', 200: '#bfdbfe', 300: '#93c5fd', 400: '#60a5fa', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8', 800: '#1e40af', 900: '#1e3a8a' },
+                        amber: { 50: '#fffbeb', 100: '#fef3c7', 200: '#fde68a', 300: '#fcd34d', 400: '#fbbf24', 500: '#f59e0b', 600: '#d97706' }
+                    },
+                    boxShadow: { soft: '0 10px 30px rgba(0,0,0,0.08)' }
+                }
+            }
+        }
+    </script>
+    <style>
+        html {
+            scroll-behavior: smooth
+        }
+
+        ::-webkit-scrollbar {
+            width: 10px;
+            height: 10px
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 999px
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9
+        }
+
+        .gallery-card {
+            transition: all 0.3s ease;
+        }
+
+        .gallery-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/config.js"></script>
+</head>
+
+<body class="font-sans text-slate-800 bg-slate-50">
+    <header class="bg-white/90 backdrop-blur sticky top-0 z-50 shadow">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="flex items-center justify-between h-16">
+                <a href="index.html" class="flex items-center gap-3">
+                    <img src="img/logo.jpg" class="h-9 w-9" alt="ตราเสมา" />
+                    <div class="leading-tight">
+                        <div class="text-base font-semibold text-brand-800">โรงเรียนบ้านขัวก่าย</div>
+                        <div class="text-[11px] text-slate-500">Ban Khua Kai School</div>
+                    </div>
+                </a>
+                <nav class="hidden md:flex items-center gap-6 text-[15px]">
+                    <a href="index.html" class="hover:text-brand-700">หน้าแรก</a>
+                    <a href="index.html#news" class="hover:text-brand-700">ข่าว/ประกาศ</a>
+                    <a href="index.html#events" class="hover:text-brand-700">กิจกรรม</a>
+                    <a href="gallery.html" class="text-brand-700 font-semibold">📸 แกลเลอรี</a>
+                    <a href="staff.html" class="hover:text-brand-700">บุคลากร</a>
+                    <a href="awards.html" class="hover:text-brand-700">ผลงาน</a>
+                    <a href="index.html#contact" class="hover:text-brand-700">ติดต่อ</a>
+                    <a href="index.html#donate"
+                        class="inline-flex items-center gap-1.5 bg-brand-600 hover:bg-brand-700 text-white px-3 py-1.5 rounded-full shadow-soft">ร่วมสนับสนุน</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 py-10">
+        <a href="index.html" class="text-sm text-brand-700">&larr; กลับไปหน้าหลัก</a>
+
+        <!-- Header -->
+        <div class="mt-6 text-center">
+            <span class="text-6xl mb-4 block">📸</span>
+            <h1 class="text-3xl md:text-4xl font-bold text-brand-900">แกลเลอรีกิจกรรม</h1>
+            <p class="mt-2 text-slate-600 max-w-2xl mx-auto">ภาพบรรยากาศกิจกรรมต่างๆ ของโรงเรียนบ้านขัวก่าย</p>
+        </div>
+
+        <!-- Gallery Grid -->
+        <div id="galleryGrid" class="mt-10 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Content loaded by JavaScript -->
+        </div>
+
+        <!-- Loading State -->
+        <div id="loadingState" class="mt-10 text-center py-10">
+            <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-brand-600"></div>
+            <p class="mt-2 text-slate-500">กำลังโหลดข้อมูล...</p>
+        </div>
+    </main>
+
+    <footer class="bg-brand-900 text-white mt-16">
+        <div class="max-w-6xl mx-auto px-4 py-8">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+                <div class="text-center md:text-left">
+                    <div class="font-semibold">โรงเรียนบ้านขัวก่าย</div>
+                    <div class="text-sm text-white/80">สพป.สกลนคร เขต 3</div>
+                </div>
+                <div class="text-sm text-white/80">
+                    © <span id="year"></span> Ban Khua Kai School
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script type="module">
+        // Year
+        document.getElementById('year').textContent = new Date().getFullYear();
+
+        // Fallback data
+        const fallbackGallery = [
+            { id: 1, title: 'กิจกรรมวันวิทยาศาสตร์', cover_image: 'https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=800&h=600&fit=crop', event_date: '20 ส.ค. 2568', tag: 'กิจกรรม' },
+            { id: 2, title: 'การแข่งขันกีฬาสี', cover_image: 'https://images.unsplash.com/photo-1571902943202-507ec2618e8f?w=800&h=600&fit=crop', event_date: '15 ส.ค. 2568', tag: 'กีฬา' },
+            { id: 3, title: 'ทัศนศึกษา', cover_image: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=800&h=600&fit=crop', event_date: '10 ส.ค. 2568', tag: 'ทัศนศึกษา' },
+            { id: 4, title: 'กิจกรรมปลูกป่า', cover_image: 'https://images.unsplash.com/photo-1542601906990-b4d3fb77c3a9?w=800&h=600&fit=crop', event_date: '5 ส.ค. 2568', tag: 'จิตอาสา' },
+            { id: 5, title: 'วันแม่แห่งชาติ', cover_image: 'https://images.unsplash.com/photo-1511632765486-a01980968a0c?w=800&h=600&fit=crop', event_date: '12 ส.ค. 2568', tag: 'วันสำคัญ' },
+            { id: 6, title: 'เข้าค่ายลูกเสือ', cover_image: 'https://images.unsplash.com/photo-1478131143081-80f7f84ca84d?w=800&h=600&fit=crop', event_date: '1 ส.ค. 2568', tag: 'กิจกรรม' },
+        ];
+
+        function renderGallery(list) {
+            const grid = document.getElementById('galleryGrid');
+            const loading = document.getElementById('loadingState');
+
+            if (loading) loading.style.display = 'none';
+            if (!grid) return;
+
+            grid.innerHTML = '';
+
+            if (!list || list.length === 0) {
+                grid.innerHTML = '<p class="text-center text-slate-500 py-8 col-span-full">ยังไม่มีภาพกิจกรรม</p>';
+                return;
+            }
+
+            list.forEach((item) => {
+                const coverUrl = item.cover_image || item.cover || 'https://via.placeholder.com/800x400';
+                const coverPos = item.cover_position || 'center';
+                const fbUrl = item.facebook_url || item.link_url || 'https://www.facebook.com/bankhuakai';
+
+                const div = document.createElement('a');
+                div.href = fbUrl;
+                div.target = '_blank';
+                div.rel = 'noopener';
+                div.className = 'gallery-card relative aspect-video rounded-2xl overflow-hidden shadow-sm border group block';
+                div.innerHTML = `
+                    <img src="${coverUrl}" alt="${item.title || ''}" 
+                         class="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+                         style="object-position: ${coverPos}">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition flex items-end p-4">
+                        <span class="text-white font-semibold text-sm">${item.title || ''}</span>
+                    </div>
+                `;
+                grid.appendChild(div);
+            });
+        }
+
+        // Load gallery from news in Supabase
+        try {
+            const { data: newsList, error } = await supabase
+                .from('news')
+                .select('*')
+                .order('created_at', { ascending: false });
+
+            if (error) throw error;
+
+            if (newsList && newsList.length > 0) {
+                renderGallery(newsList);
+            } else {
+                renderGallery(fallbackGallery);
+            }
+        } catch (e) {
+            console.warn('Gallery Error (using fallback):', e);
+            renderGallery(fallbackGallery);
+        }
+    </script>
+</body>
+
+</html>

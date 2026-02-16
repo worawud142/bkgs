@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="th">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ข่าว & ประชาสัมพันธ์ทั้งหมด – โรงเรียนบ้านขัวก่าย</title>
+  <meta name="description" content="ข่าวสารและประชาสัมพันธ์ทั้งหมดจากโรงเรียนบ้านขัวก่าย" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['IBM Plex Sans Thai', 'IBM Plex Sans', 'ui-sans-serif', 'system-ui'] },
+          colors: {
+            brand: { 50: '#eff6ff', 100: '#dbeafe', 200: '#bfdbfe', 300: '#93c5fd', 400: '#60a5fa', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8', 800: '#1e40af', 900: '#1e3a8a' },
+            accent: { 50: '#f0f9ff', 100: '#e0f2fe', 200: '#bae6fd', 300: '#7dd3fc', 400: '#38bdf8', 500: '#0ea5e9' }
+          },
+          boxShadow: { soft: '0 10px 30px rgba(0,0,0,0.08)' }
+        }
+      }
+    }
+  </script>
+  <style>
+    html { scroll-behavior: smooth }
+    ::-webkit-scrollbar { width: 10px; height: 10px }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 999px }
+    ::-webkit-scrollbar-track { background: #f1f5f9 }
+    .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/config.js"></script>
+</head>
+
+<body class="font-sans text-slate-800 bg-slate-50">
+  <!-- Header -->
+  <header class="bg-white/90 backdrop-blur sticky top-0 z-50 shadow">
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="flex items-center justify-between h-16">
+        <a href="index.html" class="flex items-center gap-3">
+          <img src="img/logo.jpg" class="h-9 w-9" alt="ตราเสมา" />
+          <div class="leading-tight">
+            <div class="text-base font-semibold text-brand-800">โรงเรียนบ้านขัวก่าย</div>
+            <div class="text-[11px] text-slate-500">Ban Khua Kai School</div>
+          </div>
+        </a>
+        <nav class="hidden md:flex items-center gap-6 text-[15px]">
+          <a href="index.html#about" class="hover:text-brand-700">เกี่ยวกับ</a>
+          <a href="index.html#news" class="text-brand-700 font-semibold">ข่าว/ประกาศ</a>
+          <a href="index.html#events" class="hover:text-brand-700">ปฏิทินกิจกรรม</a>
+          <a href="gallery.html" class="hover:text-brand-700">แกลเลอรี</a>
+          <a href="staff.html" class="hover:text-brand-700">บุคลากร</a>
+          <a href="awards.html" class="hover:text-brand-700">ผลงาน</a>
+          <a href="index.html#contact" class="hover:text-brand-700">ติดต่อ</a>
+          <a href="index.html#donate"
+            class="inline-flex items-center gap-1.5 bg-brand-600 hover:bg-brand-700 text-white px-3 py-1.5 rounded-full shadow-soft">ร่วมสนับสนุน</a>
+        </nav>
+        <button id="btnMenu" class="md:hidden p-2 rounded-lg hover:bg-slate-100">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+      </div>
+      <div id="mobileMenu" class="hidden md:hidden pb-3">
+        <div class="px-4 py-3 grid gap-2 text-[15px]">
+          <a href="index.html#about" class="py-2 hover:text-brand-700">เกี่ยวกับ</a>
+          <a href="index.html#news" class="py-2 text-brand-700 font-semibold">ข่าว/ประกาศ</a>
+          <a href="index.html#events" class="py-2 hover:text-brand-700">ปฏิทินกิจกรรม</a>
+          <a href="gallery.html" class="py-2 hover:text-brand-700">แกลเลอรี</a>
+          <a href="staff.html" class="py-2 hover:text-brand-700">บุคลากร</a>
+          <a href="awards.html" class="py-2 hover:text-brand-700">ผลงาน</a>
+          <a href="index.html#contact" class="py-2 hover:text-brand-700">ติดต่อ</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Page Header -->
+  <section class="bg-gradient-to-r from-brand-600 to-brand-800 text-white py-12">
+    <div class="max-w-7xl mx-auto px-4">
+      <a href="index.html" class="text-sm text-white/80 hover:text-white">&larr; กลับหน้าหลัก</a>
+      <h1 class="mt-3 text-3xl md:text-4xl font-bold">📰 ข่าว & ประชาสัมพันธ์</h1>
+      <p class="mt-2 text-white/80">ข่าวสาร ประกาศ และกิจกรรมทั้งหมดจากโรงเรียนบ้านขัวก่าย</p>
+    </div>
+  </section>
+
+  <!-- Filter -->
+  <section class="max-w-7xl mx-auto px-4 py-6">
+    <div class="flex flex-wrap items-center gap-3">
+      <span class="text-sm text-slate-500">กรอง:</span>
+      <button data-filter="all" class="filter-btn active px-3 py-1.5 text-sm rounded-full bg-brand-600 text-white font-medium">ทั้งหมด</button>
+      <button data-filter="ข่าว" class="filter-btn px-3 py-1.5 text-sm rounded-full bg-slate-100 text-slate-600 hover:bg-brand-100 hover:text-brand-700 font-medium">ข่าว</button>
+      <button data-filter="ประกาศ" class="filter-btn px-3 py-1.5 text-sm rounded-full bg-slate-100 text-slate-600 hover:bg-brand-100 hover:text-brand-700 font-medium">ประกาศ</button>
+      <button data-filter="กิจกรรม" class="filter-btn px-3 py-1.5 text-sm rounded-full bg-slate-100 text-slate-600 hover:bg-brand-100 hover:text-brand-700 font-medium">กิจกรรม</button>
+    </div>
+  </section>
+
+  <!-- News Grid -->
+  <main class="max-w-7xl mx-auto px-4 pb-14">
+    <div id="newsCount" class="mb-4 text-sm text-slate-500"></div>
+    <div id="newsGrid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+    <div id="loading" class="text-center py-10 text-slate-400">
+      <svg class="animate-spin h-8 w-8 mx-auto text-brand-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+      </svg>
+      <p class="mt-2">กำลังโหลดข่าว...</p>
+    </div>
+    <div id="emptyState" class="hidden text-center py-16">
+      <div class="text-5xl mb-4">📭</div>
+      <p class="text-slate-500">ไม่พบข่าวในหมวดนี้</p>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-slate-900 text-white py-8">
+    <div class="max-w-7xl mx-auto px-4 text-center">
+      <p class="text-sm text-white/60">© <span id="year"></span> โรงเรียนบ้านขัวก่าย – Ban Khua Kai School</p>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Mobile menu
+    document.getElementById('btnMenu')?.addEventListener('click', () => {
+      document.getElementById('mobileMenu').classList.toggle('hidden');
+    });
+
+    const fallbackNews = [
+      { id: 1, event_date: 'ประกาศ • 20 ส.ค. 2568', title: 'กำหนดการกิจกรรมวันวิทยาศาสตร์', description: 'เชิญชวนนักเรียนทุกระดับชั้นเข้าร่วมกิจกรรมฐานการเรียนรู้ วิทยาศาสตร์น่ารู้ และการประกวดสิ่งประดิษฐ์', tag: 'กิจกรรม', cover_image: 'https://images.unsplash.com/photo-1606326608690-4c3889a3ad71?q=80&w=1600&auto=format&fit=crop' },
+      { id: 2, event_date: 'ข่าว • 10 ส.ค. 2568', title: 'รับสมัครนักเรียนใหม่ ปีการศึกษา 2569', description: 'เปิดรับสมัครระดับชั้นอนุบาล 1 – มัธยมศึกษาตอนต้น รายละเอียดและเอกสารที่ต้องเตรียมคลิกอ่าน', tag: 'รับสมัคร', cover_image: 'https://images.unsplash.com/photo-1551836022-d5d88e9218df?q=80&w=1600&auto=format&fit=crop' },
+      { id: 3, event_date: 'ข่าว • 05 ส.ค. 2568', title: 'อบรมเชิงปฏิบัติการ Scratch & Arduino', description: 'เสริมทักษะเขียนโปรแกรม คิดเชิงคำนวณ และหุ่นยนต์ สำหรับครูและนักเรียนแกนนำ', tag: 'พัฒนา', cover_image: 'https://images.unsplash.com/photo-1510936111840-65e151ad71bb?q=80&w=1600&auto=format&fit=crop' },
+    ];
+
+    let allNews = [];
+    let currentFilter = 'all';
+
+    function renderNews(list) {
+      const wrap = document.getElementById('newsGrid');
+      const countEl = document.getElementById('newsCount');
+      const emptyEl = document.getElementById('emptyState');
+      wrap.innerHTML = '';
+
+      const filtered = currentFilter === 'all' ? list : list.filter(n => {
+        const tag = (n.tag || '').toLowerCase();
+        const dateStr = (n.event_date || n.date || '').toLowerCase();
+        const filterLower = currentFilter.toLowerCase();
+        return tag.includes(filterLower) || dateStr.includes(filterLower);
+      });
+
+      countEl.textContent = `แสดง ${filtered.length} รายการ`;
+
+      if (filtered.length === 0) {
+        emptyEl.classList.remove('hidden');
+        return;
+      }
+      emptyEl.classList.add('hidden');
+
+      filtered.forEach((n, i) => {
+        const item = {
+          id: n.id || (i + 1),
+          title: n.title,
+          cover: n.cover_image || n.cover || 'https://via.placeholder.com/800x400',
+          coverPosition: n.cover_position || 'center',
+          date: n.event_date || n.date || '',
+          desc: n.description || n.desc || '',
+          tag: n.tag || '',
+          slug: n.slug || ''
+        };
+
+        const url = item.id ? `news.html?id=${item.id}` : `news.html?slug=${encodeURIComponent(item.slug)}`;
+
+        const el = document.createElement('article');
+        el.className = 'bg-white rounded-2xl overflow-hidden border shadow-sm hover:shadow-soft transition group';
+        el.innerHTML = `
+          <div class="h-48 overflow-hidden">
+            <img src="${item.cover}" class="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500" style="object-position: ${item.coverPosition}" alt="${item.title}">
+          </div>
+          <div class="p-5">
+            <div class="flex items-center gap-2 mb-2">
+              <span class="text-xs text-slate-500">📅 ${item.date}</span>
+              <span class="text-xs px-2 py-0.5 bg-brand-100 text-brand-700 rounded-full">${item.tag}</span>
+            </div>
+            <h3 class="font-semibold text-slate-800 group-hover:text-brand-700 transition-colors line-clamp-2">${item.title}</h3>
+            <p class="mt-2 text-sm text-slate-600 line-clamp-2">${item.desc}</p>
+            <a href="${url}" class="mt-4 inline-flex items-center gap-1 text-brand-700 text-sm font-medium hover:gap-2 transition-all">
+              อ่านต่อ <span>→</span>
+            </a>
+          </div>`;
+        wrap.appendChild(el);
+      });
+    }
+
+    // Filter buttons
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-btn').forEach(b => {
+          b.classList.remove('bg-brand-600', 'text-white', 'active');
+          b.classList.add('bg-slate-100', 'text-slate-600');
+        });
+        btn.classList.remove('bg-slate-100', 'text-slate-600');
+        btn.classList.add('bg-brand-600', 'text-white', 'active');
+        currentFilter = btn.dataset.filter;
+        renderNews(allNews);
+      });
+    });
+
+    // Load data
+    (async () => {
+      try {
+        const { data: list, error } = await supabase
+          .from('news')
+          .select('*')
+          .order('created_at', { ascending: false });
+
+        if (error) throw error;
+
+        if (list && list.length > 0) {
+          allNews = list;
+        } else {
+          allNews = fallbackNews;
+        }
+      } catch (e) {
+        console.warn('News Error (using fallback):', e);
+        allNews = fallbackNews;
+      }
+
+      document.getElementById('loading').classList.add('hidden');
+      renderNews(allNews);
+    })();
+  </script>
+</body>
+
+</html>

@@ -6,7 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin - ระบบจัดการข่าว</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
     <style>
         body {
             font-family: 'IBM Plex Sans Thai', 'IBM Plex Sans', sans-serif;
@@ -73,6 +75,10 @@
                 <button id="tabStaff" onclick="switchTab('staff')"
                     class="px-4 py-2 font-medium text-gray-500 hover:text-gray-700">
                     👨‍🏫 จัดการบุคลากร
+                </button>
+                <button id="tabDocuments" onclick="switchTab('documents')"
+                    class="px-4 py-2 font-medium text-gray-500 hover:text-gray-700">
+                    📄 จัดการเอกสาร
                 </button>
             </div>
         </div>
@@ -404,6 +410,99 @@
         </div>
     </div>
 
+    <!-- Documents Section -->
+    <div id="documentsSection" class="container mx-auto p-6 hidden">
+        <div class="flex justify-between mb-6">
+            <div>
+                <h2 class="text-2xl font-semibold">📄 เอกสารดาวน์โหลด</h2>
+                <p class="text-sm text-gray-500 mt-1">จัดการไฟล์เอกสารและลิงก์ดาวน์โหลดที่แสดงบนหน้าเว็บไซต์</p>
+            </div>
+            <button onclick="openDocumentModal()"
+                class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 flex items-center gap-2">
+                <span>+</span> เพิ่มเอกสาร
+            </button>
+        </div>
+
+        <div class="bg-white rounded-lg shadow overflow-hidden">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">ชื่อเอกสาร</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">ลิงก์/ไฟล์</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">ลำดับ</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">จัดการ</th>
+                    </tr>
+                </thead>
+                <tbody id="documentsTableBody" class="bg-white divide-y divide-gray-200">
+                    <!-- Rows will be populated here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Document Modal Form -->
+    <div id="documentModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+        <div class="relative top-20 mx-auto p-5 border w-full max-w-lg shadow-lg rounded-md bg-white">
+            <div class="flex justify-between items-center mb-4">
+                <h3 id="documentModalTitle" class="text-lg font-bold">เพิ่มเอกสาร</h3>
+                <button onclick="closeDocumentModal()" class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+            </div>
+
+            <form id="documentForm" class="space-y-4">
+                <input type="hidden" id="editDocumentId" name="id">
+
+                <div>
+                    <label class="block text-sm font-medium">ชื่อเอกสาร</label>
+                    <input type="text" id="documentTitle" name="title" class="mt-1 block w-full border rounded p-2"
+                        placeholder="เช่น ระเบียบการรับสมัครนักเรียน" required>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium">ประเภท</label>
+                    <div class="mt-2 flex gap-4">
+                        <label class="inline-flex items-center gap-2 cursor-pointer">
+                            <input type="radio" name="doc_type" value="link" checked onchange="toggleDocType()"
+                                class="text-blue-600">
+                            <span class="text-sm">🔗 ลิงก์ URL</span>
+                        </label>
+                        <label class="inline-flex items-center gap-2 cursor-pointer">
+                            <input type="radio" name="doc_type" value="file" onchange="toggleDocType()"
+                                class="text-blue-600">
+                            <span class="text-sm">📎 อัปโหลดไฟล์</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div id="docLinkField">
+                    <label class="block text-sm font-medium">URL ลิงก์</label>
+                    <input type="url" id="documentUrl" name="file_url" class="mt-1 block w-full border rounded p-2"
+                        placeholder="https://drive.google.com/... หรือ URL อื่นๆ">
+                    <p class="text-xs text-gray-500 mt-1">วางลิงก์ Google Drive, Dropbox หรือ URL เว็บไซต์ใดๆ</p>
+                </div>
+
+                <div id="docFileField" class="hidden">
+                    <label class="block text-sm font-medium">อัปโหลดไฟล์</label>
+                    <input type="file" id="documentFile" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.zip,.rar"
+                        class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                    <p class="text-xs text-gray-500 mt-1">รองรับไฟล์ PDF, Word, Excel, PowerPoint, ZIP (สูงสุด 50MB)</p>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium">ลำดับการแสดง</label>
+                    <input type="number" id="documentSortOrder" name="sort_order"
+                        class="mt-1 block w-full border rounded p-2" value="1">
+                </div>
+
+                <div class="flex justify-end gap-2 pt-4">
+                    <button type="button" onclick="closeDocumentModal()"
+                        class="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300">ยกเลิก</button>
+                    <button type="submit"
+                        class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">บันทึก</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- Staff Modal Form -->
     <div id="staffModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
         <div class="relative top-20 mx-auto p-5 border w-full max-w-lg shadow-lg rounded-md bg-white">
@@ -622,6 +721,14 @@
                         required></textarea>
                 </div>
 
+                <div>
+                    <label class="block text-sm font-medium">🔗 ลิงก์ Facebook โพสต์</label>
+                    <input type="url" id="newsFacebookUrl" name="facebook_url"
+                        class="mt-1 block w-full border rounded p-2" placeholder="https://www.facebook.com/...">
+                    <p class="text-xs text-gray-500 mt-1">วางลิงก์โพสต์ Facebook ของข่าวนี้ เพื่อใช้แสดงในหน้าแกลเลอรี
+                    </p>
+                </div>
+
                 <!-- Gallery Images Upload -->
                 <div>
                     <label class="block text-sm font-medium">รูปภาพประกอบเนื้อหา (เลือกได้หลายรูป)</label>
@@ -639,13 +746,82 @@
                                 file:text-sm file:font-semibold
                                 file:bg-green-50 file:text-green-700
                                 hover:file:bg-green-100" />
-                            <button type="button" id="insertGalleryBtn"
-                                class="px-3 py-2 bg-green-600 text-white text-sm rounded hover:bg-green-700 whitespace-nowrap disabled:opacity-50"
-                                disabled>
-                                แทรกรูปในเนื้อหา
-                            </button>
                         </div>
-                        <p class="text-xs text-gray-500">เลือกรูปภาพแล้วกด "แทรกรูปในเนื้อหา" เพื่อเพิ่มรูปในเนื้อข่าว
+
+                        <!-- Image Settings -->
+                        <div id="gallerySettings" class="hidden bg-gray-50 border rounded-lg p-3 space-y-3">
+                            <div class="flex flex-wrap gap-4">
+                                <div class="flex-1 min-w-[140px]">
+                                    <label class="block text-xs font-medium text-gray-600 mb-1">📐 ขนาดรูปภาพ</label>
+                                    <div class="flex gap-1">
+                                        <button type="button" onclick="setGallerySize('small')" data-size="small"
+                                            class="gallery-size-btn flex-1 px-2 py-1.5 text-xs border rounded hover:bg-blue-50 transition-colors">
+                                            S<br><span class="text-[10px] text-gray-400">25%</span>
+                                        </button>
+                                        <button type="button" onclick="setGallerySize('medium')" data-size="medium"
+                                            class="gallery-size-btn flex-1 px-2 py-1.5 text-xs border rounded bg-blue-100 border-blue-400 text-blue-700 transition-colors">
+                                            M<br><span class="text-[10px]">50%</span>
+                                        </button>
+                                        <button type="button" onclick="setGallerySize('large')" data-size="large"
+                                            class="gallery-size-btn flex-1 px-2 py-1.5 text-xs border rounded hover:bg-blue-50 transition-colors">
+                                            L<br><span class="text-[10px] text-gray-400">75%</span>
+                                        </button>
+                                        <button type="button" onclick="setGallerySize('full')" data-size="full"
+                                            class="gallery-size-btn flex-1 px-2 py-1.5 text-xs border rounded hover:bg-blue-50 transition-colors">
+                                            Full<br><span class="text-[10px] text-gray-400">100%</span>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="flex-1 min-w-[140px]">
+                                    <label class="block text-xs font-medium text-gray-600 mb-1">📍 จัดตำแหน่ง</label>
+                                    <div class="flex gap-1">
+                                        <button type="button" onclick="setGalleryAlign('left')" data-align="left"
+                                            class="gallery-align-btn flex-1 px-2 py-1.5 text-xs border rounded hover:bg-blue-50 transition-colors" title="ชิดซ้าย">
+                                            ◀ ซ้าย
+                                        </button>
+                                        <button type="button" onclick="setGalleryAlign('center')" data-align="center"
+                                            class="gallery-align-btn flex-1 px-2 py-1.5 text-xs border rounded bg-blue-100 border-blue-400 text-blue-700 transition-colors" title="กึ่งกลาง">
+                                            ● กลาง
+                                        </button>
+                                        <button type="button" onclick="setGalleryAlign('right')" data-align="right"
+                                            class="gallery-align-btn flex-1 px-2 py-1.5 text-xs border rounded hover:bg-blue-50 transition-colors" title="ชิดขวา">
+                                            ขวา ▶
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-gray-600 mb-1">🖼️ จำนวนรูปต่อแถว</label>
+                                <div class="flex gap-1">
+                                    <button type="button" onclick="setGalleryColumns(1)" data-cols="1"
+                                        class="gallery-cols-btn flex-1 px-2 py-1.5 text-xs border rounded bg-blue-100 border-blue-400 text-blue-700 transition-colors">
+                                        1 รูป
+                                    </button>
+                                    <button type="button" onclick="setGalleryColumns(2)" data-cols="2"
+                                        class="gallery-cols-btn flex-1 px-2 py-1.5 text-xs border rounded hover:bg-blue-50 transition-colors">
+                                        2 รูป
+                                    </button>
+                                    <button type="button" onclick="setGalleryColumns(3)" data-cols="3"
+                                        class="gallery-cols-btn flex-1 px-2 py-1.5 text-xs border rounded hover:bg-blue-50 transition-colors">
+                                        3 รูป
+                                    </button>
+                                    <button type="button" onclick="setGalleryColumns(4)" data-cols="4"
+                                        class="gallery-cols-btn flex-1 px-2 py-1.5 text-xs border rounded hover:bg-blue-50 transition-colors">
+                                        4 รูป
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <p class="text-[11px] text-gray-400">💡 เลือกจำนวนรูปต่อแถว ขนาด และตำแหน่งก่อนกดแทรก</p>
+                                <button type="button" id="insertGalleryBtn"
+                                    class="px-3 py-2 bg-green-600 text-white text-sm rounded hover:bg-green-700 whitespace-nowrap disabled:opacity-50"
+                                    disabled>
+                                    แทรกรูปในเนื้อหา
+                                </button>
+                            </div>
+                        </div>
+
+                        <p class="text-xs text-gray-500">เลือกรูปภาพแล้วตั้งค่าขนาด/ตำแหน่ง แล้วกด "แทรกรูปในเนื้อหา"
                             (สูงสุด 10 รูป)</p>
                     </div>
                 </div>
@@ -905,6 +1081,7 @@
                     content: formData.get('content'),
                     cover_image: coverUrl,
                     cover_position: formData.get('cover_position') || 'center',
+                    facebook_url: formData.get('facebook_url') || null,
                     slug: slug
                 };
 
@@ -994,6 +1171,7 @@
             document.getElementById('newsTitle').value = data.title || '';
             document.getElementById('newsDesc').value = data.description || '';
             document.getElementById('newsContent').value = data.content || '';
+            document.getElementById('newsFacebookUrl').value = data.facebook_url || '';
 
             // Cover position
             const coverPosition = data.cover_position || 'center';
@@ -1023,8 +1201,53 @@
         const galleryFilesInput = document.getElementById('galleryFiles');
         const galleryPreviewGrid = document.getElementById('galleryPreviewGrid');
         const insertGalleryBtn = document.getElementById('insertGalleryBtn');
+        const gallerySettingsPanel = document.getElementById('gallerySettings');
         let pendingGalleryFiles = [];
         let uploadedGalleryUrls = [];
+        let selectedGallerySize = 'medium';
+        let selectedGalleryAlign = 'center';
+        let selectedGalleryColumns = 1;
+
+        const sizeMap = { small: '25%', medium: '50%', large: '75%', full: '100%' };
+
+        window.setGallerySize = (size) => {
+            selectedGallerySize = size;
+            document.querySelectorAll('.gallery-size-btn').forEach(btn => {
+                btn.classList.remove('bg-blue-100', 'border-blue-400', 'text-blue-700');
+                btn.classList.add('hover:bg-blue-50');
+            });
+            const active = document.querySelector(`.gallery-size-btn[data-size="${size}"]`);
+            if (active) {
+                active.classList.add('bg-blue-100', 'border-blue-400', 'text-blue-700');
+                active.classList.remove('hover:bg-blue-50');
+            }
+        };
+
+        window.setGalleryColumns = (cols) => {
+            selectedGalleryColumns = cols;
+            document.querySelectorAll('.gallery-cols-btn').forEach(btn => {
+                btn.classList.remove('bg-blue-100', 'border-blue-400', 'text-blue-700');
+                btn.classList.add('hover:bg-blue-50');
+            });
+            const active = document.querySelector(`.gallery-cols-btn[data-cols="${cols}"]`);
+            if (active) {
+                active.classList.add('bg-blue-100', 'border-blue-400', 'text-blue-700');
+                active.classList.remove('hover:bg-blue-50');
+            }
+        };
+
+        window.setGalleryAlign = (align) => {
+            selectedGalleryAlign = align;
+            document.querySelectorAll('.gallery-align-btn').forEach(btn => {
+                btn.classList.remove('bg-blue-100', 'border-blue-400', 'text-blue-700');
+                btn.classList.add('hover:bg-blue-50');
+            });
+            const active = document.querySelector(`.gallery-align-btn[data-align="${align}"]`);
+            if (active) {
+                active.classList.add('bg-blue-100', 'border-blue-400', 'text-blue-700');
+                active.classList.remove('hover:bg-blue-50');
+            }
+        };
 
         // Preview selected gallery images
         galleryFilesInput.addEventListener('change', function (e) {
@@ -1035,8 +1258,11 @@
 
             if (files.length === 0) {
                 insertGalleryBtn.disabled = true;
+                gallerySettingsPanel.classList.add('hidden');
                 return;
             }
+
+            gallerySettingsPanel.classList.remove('hidden');
 
             files.forEach((file, index) => {
                 const reader = new FileReader();
@@ -1073,10 +1299,42 @@
 
                 uploadedGalleryUrls = await Promise.all(uploadPromises);
 
-                // Generate HTML for images
-                const imagesHtml = uploadedGalleryUrls.map((url, i) =>
-                    `<img src="${url}" alt="รูปที่ ${i + 1}" style="max-width:100%; margin:10px 0; border-radius:8px;">`
-                ).join('\n');
+                // Generate HTML for images with size, alignment and grid layout
+                const cols = selectedGalleryColumns;
+                let imagesHtml = '';
+
+                if (cols > 1) {
+                    // Multi-column grid layout
+                    const justifyMap = { left: 'flex-start', center: 'center', right: 'flex-end' };
+                    const justify = justifyMap[selectedGalleryAlign] || 'center';
+                    const gap = '8px';
+                    const imgPercent = `calc(${(100 / cols).toFixed(2)}% - ${gap})`;
+
+                    // Split images into rows of N columns
+                    const rows = [];
+                    for (let i = 0; i < uploadedGalleryUrls.length; i += cols) {
+                        rows.push(uploadedGalleryUrls.slice(i, i + cols));
+                    }
+
+                    imagesHtml = rows.map(row => {
+                        const imgs = row.map((url, i) =>
+                            `<img src="${url}" alt="" style="width:${imgPercent}; border-radius:8px; object-fit:cover;">`
+                        ).join('\n');
+                        return `<div style="display:flex; gap:${gap}; justify-content:${justify}; margin:10px 0;">\n${imgs}\n</div>`;
+                    }).join('\n');
+                } else {
+                    // Single column (original behavior)
+                    const imgWidth = sizeMap[selectedGallerySize] || '50%';
+                    const alignStyle = selectedGalleryAlign === 'center'
+                        ? 'display:block; margin-left:auto; margin-right:auto;'
+                        : selectedGalleryAlign === 'right'
+                            ? 'display:block; margin-left:auto; margin-right:0;'
+                            : 'display:block; margin-left:0; margin-right:auto;';
+
+                    imagesHtml = uploadedGalleryUrls.map((url, i) =>
+                        `<img src="${url}" alt="รูปที่ ${i + 1}" style="width:${imgWidth}; max-width:100%; margin-top:10px; margin-bottom:10px; border-radius:8px; ${alignStyle}">`
+                    ).join('\n');
+                }
 
                 // Insert at cursor position or at end
                 const contentArea = document.getElementById('newsContent');
@@ -1097,6 +1355,7 @@
                 pendingGalleryFiles = [];
                 uploadedGalleryUrls = [];
 
+                gallerySettingsPanel.classList.add('hidden');
                 alert(`✅ เพิ่มรูปภาพ ${uploadPromises.length} รูปเรียบร้อย!`);
                 this.textContent = 'แทรกรูปในเนื้อหา';
                 this.disabled = true;
@@ -1119,6 +1378,13 @@
             uploadedGalleryUrls = [];
             insertGalleryBtn.disabled = true;
             insertGalleryBtn.textContent = 'แทรกรูปในเนื้อหา';
+            gallerySettingsPanel.classList.add('hidden');
+            selectedGallerySize = 'medium';
+            selectedGalleryAlign = 'center';
+            selectedGalleryColumns = 1;
+            setGallerySize('medium');
+            setGalleryAlign('center');
+            setGalleryColumns(1);
         };
 
         // ========== Tab Switching ==========
@@ -1128,11 +1394,13 @@
             const eventsSection = document.getElementById('eventsSection');
             const donationSection = document.getElementById('donationSection');
             const staffSection = document.getElementById('staffSection');
+            const documentsSection = document.getElementById('documentsSection');
             const tabNews = document.getElementById('tabNews');
             const tabBanners = document.getElementById('tabBanners');
             const tabEvents = document.getElementById('tabEvents');
             const tabDonation = document.getElementById('tabDonation');
             const tabStaff = document.getElementById('tabStaff');
+            const tabDocuments = document.getElementById('tabDocuments');
 
             // Hide all sections
             newsSection.classList.add('hidden');
@@ -1140,9 +1408,10 @@
             eventsSection.classList.add('hidden');
             donationSection.classList.add('hidden');
             staffSection.classList.add('hidden');
+            documentsSection.classList.add('hidden');
 
             // Reset all tabs
-            [tabNews, tabBanners, tabEvents, tabDonation, tabStaff].forEach(t => {
+            [tabNews, tabBanners, tabEvents, tabDonation, tabStaff, tabDocuments].forEach(t => {
                 t.classList.remove('border-b-2', 'border-blue-600', 'text-blue-600');
                 t.classList.add('text-gray-500');
             });
@@ -1173,6 +1442,11 @@
                 tabStaff.classList.add('border-b-2', 'border-blue-600', 'text-blue-600');
                 tabStaff.classList.remove('text-gray-500');
                 loadStaff();
+            } else if (tab === 'documents') {
+                documentsSection.classList.remove('hidden');
+                tabDocuments.classList.add('border-b-2', 'border-blue-600', 'text-blue-600');
+                tabDocuments.classList.remove('text-gray-500');
+                loadDocuments();
             }
         };
 
@@ -1846,6 +2120,175 @@
                 alert('บันทึกกิจกรรมเรียบร้อย ✅');
                 closeEventModal();
                 loadEvents();
+
+            } catch (error) {
+                console.error(error);
+                alert('เกิดข้อผิดพลาด: ' + error.message);
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'บันทึก';
+            }
+        });
+
+        // ========== Documents Management ==========
+        let allDocumentsMap = new Map();
+
+        async function loadDocuments() {
+            const tableBody = document.getElementById('documentsTableBody');
+            tableBody.innerHTML = '<tr><td colspan="4" class="text-center py-4">กำลังโหลดข้อมูล...</td></tr>';
+
+            try {
+                const { data, error } = await supabase
+                    .from('documents')
+                    .select('*')
+                    .order('sort_order', { ascending: true });
+
+                if (error) throw error;
+
+                tableBody.innerHTML = '';
+                allDocumentsMap.clear();
+
+                if (!data || data.length === 0) {
+                    tableBody.innerHTML = '<tr><td colspan="4" class="text-center py-4">ยังไม่มีเอกสาร</td></tr>';
+                    return;
+                }
+
+                data.forEach(item => {
+                    allDocumentsMap.set(String(item.id), item);
+                    const shortUrl = (item.file_url || '').length > 40 ? item.file_url.substring(0, 40) + '...' : (item.file_url || '-');
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td class="px-4 py-3 text-sm text-gray-900 font-medium">${item.title}</td>
+                        <td class="px-4 py-3 text-sm text-gray-500 max-w-xs truncate">
+                            <a href="${item.file_url || '#'}" target="_blank" class="text-blue-600 hover:underline" title="${item.file_url || ''}">${shortUrl}</a>
+                        </td>
+                        <td class="px-4 py-3 text-sm text-gray-500">${item.sort_order || 0}</td>
+                        <td class="px-4 py-3 whitespace-nowrap text-sm font-medium">
+                            <button onclick="window.editDocument('${item.id}')" class="text-indigo-600 hover:text-indigo-900 mr-3">แก้ไข</button>
+                            <button onclick="window.deleteDocument('${item.id}')" class="text-red-600 hover:text-red-900">ลบ</button>
+                        </td>
+                    `;
+                    tableBody.appendChild(tr);
+                });
+            } catch (e) {
+                console.error(e);
+                tableBody.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-red-500">เกิดข้อผิดพลาด: ${e.message}</td></tr>`;
+            }
+        }
+
+        // Toggle link/file fields
+        window.toggleDocType = () => {
+            const type = document.querySelector('input[name="doc_type"]:checked').value;
+            document.getElementById('docLinkField').classList.toggle('hidden', type !== 'link');
+            document.getElementById('docFileField').classList.toggle('hidden', type !== 'file');
+        };
+
+        // Document Modal Functions
+        window.openDocumentModal = () => document.getElementById('documentModal').classList.remove('hidden');
+
+        window.closeDocumentModal = () => {
+            document.getElementById('documentModal').classList.add('hidden');
+            document.getElementById('documentForm').reset();
+            document.getElementById('editDocumentId').value = '';
+            document.getElementById('documentModalTitle').textContent = 'เพิ่มเอกสาร';
+            // Reset to link mode
+            document.querySelector('input[name="doc_type"][value="link"]').checked = true;
+            toggleDocType();
+        };
+
+        window.editDocument = (id) => {
+            const data = allDocumentsMap.get(String(id));
+            if (!data) return;
+
+            document.getElementById('editDocumentId').value = id;
+            document.getElementById('documentTitle').value = data.title || '';
+            document.getElementById('documentUrl').value = data.file_url || '';
+            document.getElementById('documentSortOrder').value = data.sort_order || 1;
+
+            // Set to link mode for editing
+            document.querySelector('input[name="doc_type"][value="link"]').checked = true;
+            toggleDocType();
+
+            document.getElementById('documentModalTitle').textContent = 'แก้ไขเอกสาร';
+            openDocumentModal();
+        };
+
+        window.deleteDocument = async (id) => {
+            if (!confirm("ยืนยันการลบเอกสารนี้?")) return;
+            try {
+                const { error } = await supabase.from('documents').delete().eq('id', id);
+                if (error) throw error;
+                loadDocuments();
+            } catch (e) {
+                alert('เกิดข้อผิดพลาด: ' + e.message);
+            }
+        };
+
+        // Upload document file to Supabase Storage
+        async function uploadDocumentFile(file) {
+            const fileExt = file.name.split('.').pop();
+            const fileName = `doc_${Date.now()}_${Math.random().toString(36).substring(2, 8)}.${fileExt}`;
+            const filePath = `documents/${fileName}`;
+
+            const { data, error } = await supabase.storage
+                .from('uploads')
+                .upload(filePath, file);
+
+            if (error) throw error;
+
+            const { data: urlData } = supabase.storage
+                .from('uploads')
+                .getPublicUrl(filePath);
+
+            return urlData.publicUrl;
+        }
+
+        // Document Form Submission
+        document.getElementById('documentForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const form = e.target;
+            const submitBtn = form.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'กำลังบันทึก...';
+
+            const formData = new FormData(form);
+            const id = formData.get('id');
+            const docType = document.querySelector('input[name="doc_type"]:checked').value;
+
+            try {
+                let fileUrl = formData.get('file_url') || '';
+
+                // If file upload mode, upload the file first
+                if (docType === 'file') {
+                    const fileInput = document.getElementById('documentFile');
+                    if (fileInput.files.length > 0) {
+                        fileUrl = await uploadDocumentFile(fileInput.files[0]);
+                    } else if (!id) {
+                        alert('กรุณาเลือกไฟล์');
+                        return;
+                    }
+                }
+
+                const docData = {
+                    title: formData.get('title'),
+                    file_url: fileUrl,
+                    sort_order: parseInt(formData.get('sort_order')) || 1
+                };
+
+                let error;
+                if (id) {
+                    const res = await supabase.from('documents').update(docData).eq('id', id);
+                    error = res.error;
+                } else {
+                    const res = await supabase.from('documents').insert([docData]);
+                    error = res.error;
+                }
+
+                if (error) throw error;
+
+                alert('บันทึกเอกสารเรียบร้อย ✅');
+                closeDocumentModal();
+                loadDocuments();
 
             } catch (error) {
                 console.error(error);

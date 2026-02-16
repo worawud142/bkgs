@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="th">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>👨‍🏫 ผู้บริหาร & คณะครู – โรงเรียนบ้านขัวก่าย</title>
+    <meta name="description" content="ผู้บริหารและคณะครูโรงเรียนบ้านขัวก่าย" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['IBM Plex Sans Thai', 'IBM Plex Sans', 'ui-sans-serif', 'system-ui'] },
+                    colors: {
+                        brand: { 50: '#eff6ff', 100: '#dbeafe', 200: '#bfdbfe', 300: '#93c5fd', 400: '#60a5fa', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8', 800: '#1e40af', 900: '#1e3a8a' },
+                        amber: { 50: '#fffbeb', 100: '#fef3c7', 200: '#fde68a', 300: '#fcd34d', 400: '#fbbf24', 500: '#f59e0b', 600: '#d97706' }
+                    },
+                    boxShadow: { soft: '0 10px 30px rgba(0,0,0,0.08)' }
+                }
+            }
+        }
+    </script>
+    <style>
+        html {
+            scroll-behavior: smooth
+        }
+
+        ::-webkit-scrollbar {
+            width: 10px;
+            height: 10px
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 999px
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9
+        }
+
+        .staff-category {
+            transition: all 0.3s ease;
+        }
+
+        .staff-category:hover {
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/config.js"></script>
+</head>
+
+<body class="font-sans text-slate-800 bg-slate-50">
+    <header class="bg-white/90 backdrop-blur sticky top-0 z-50 shadow">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="flex items-center justify-between h-16">
+                <a href="index.html" class="flex items-center gap-3">
+                    <img src="img/logo.jpg" class="h-9 w-9" alt="ตราเสมา" />
+                    <div class="leading-tight">
+                        <div class="text-base font-semibold text-brand-800">โรงเรียนบ้านขัวก่าย</div>
+                        <div class="text-[11px] text-slate-500">Ban Khua Kai School</div>
+                    </div>
+                </a>
+                <nav class="hidden md:flex items-center gap-6 text-[15px]">
+                    <a href="index.html" class="hover:text-brand-700">หน้าแรก</a>
+                    <a href="index.html#news" class="hover:text-brand-700">ข่าว/ประกาศ</a>
+                    <a href="index.html#events" class="hover:text-brand-700">กิจกรรม</a>
+                    <a href="gallery.html" class="hover:text-brand-700">แกลเลอรี</a>
+                    <a href="staff.html" class="text-brand-700 font-semibold">👨‍🏫 บุคลากร</a>
+                    <a href="awards.html" class="hover:text-brand-700">ผลงาน</a>
+                    <a href="index.html#contact" class="hover:text-brand-700">ติดต่อ</a>
+                    <a href="index.html#donate"
+                        class="inline-flex items-center gap-1.5 bg-brand-600 hover:bg-brand-700 text-white px-3 py-1.5 rounded-full shadow-soft">ร่วมสนับสนุน</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 py-10">
+        <a href="index.html" class="text-sm text-brand-700">&larr; กลับไปหน้าหลัก</a>
+
+        <!-- Header -->
+        <div class="mt-6 text-center">
+            <span class="text-6xl mb-4 block">👨‍🏫</span>
+            <h1 class="text-3xl md:text-4xl font-bold text-brand-900">ผู้บริหาร & คณะครู</h1>
+            <p class="mt-2 text-slate-600 max-w-2xl mx-auto">บุคลากรของโรงเรียนบ้านขัวก่าย สพป.สกลนคร เขต 3</p>
+        </div>
+
+        <!-- Staff Container -->
+        <div id="staffContainer" class="mt-10 grid md:grid-cols-2 gap-4">
+            <!-- Content loaded by JavaScript -->
+        </div>
+
+        <!-- Loading State -->
+        <div id="loadingState" class="mt-10 text-center py-10">
+            <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-brand-600"></div>
+            <p class="mt-2 text-slate-500">กำลังโหลดข้อมูล...</p>
+        </div>
+    </main>
+
+    <footer class="bg-brand-900 text-white mt-16">
+        <div class="max-w-6xl mx-auto px-4 py-8">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+                <div class="text-center md:text-left">
+                    <div class="font-semibold">โรงเรียนบ้านขัวก่าย</div>
+                    <div class="text-sm text-white/80">สพป.สกลนคร เขต 3</div>
+                </div>
+                <div class="text-sm text-white/80">
+                    © <span id="year"></span> Ban Khua Kai School
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Year
+        document.getElementById('year').textContent = new Date().getFullYear();
+
+        // Optimize Cloudinary URLs
+        function optimizeCloudinaryUrl(url) {
+            if (url && url.includes('cloudinary.com')) {
+                return url.replace('/upload/', '/upload/f_auto,q_auto,w_200,h_200,c_fill/');
+            }
+            return url;
+        }
+
+        // Staff category labels and grouping
+        const categoryLabels = {
+            'executive': { title: '👔 ผู้บริหาร', bgColor: 'bg-brand-100', textColor: 'text-brand-800' },
+            'kindergarten': { title: '🎒 ครูอนุบาล', bgColor: 'bg-pink-100', textColor: 'text-pink-800' },
+            'p1-p3': { title: '📚 ครู ป.1-ป.3', bgColor: 'bg-green-100', textColor: 'text-green-800' },
+            'p4-p6': { title: '📖 ครู ป.4-ป.6', bgColor: 'bg-blue-100', textColor: 'text-blue-800' },
+            'm1-m3': { title: '📘 ครู ม.1-ม.3', bgColor: 'bg-purple-100', textColor: 'text-purple-800' },
+            'other': { title: '👩‍🏫 บุคลากรอื่นๆ', bgColor: 'bg-slate-100', textColor: 'text-slate-800' }
+        };
+        const categoryOrder = ['executive', 'kindergarten', 'p1-p3', 'p4-p6', 'm1-m3', 'other'];
+
+        // Map individual grades to groups and badge labels
+        const gradeMapping = {
+            'executive': { group: 'executive', badge: '' },
+            'kindergarten': { group: 'kindergarten', badge: 'อนุบาล' },
+            'p1': { group: 'p1-p3', badge: 'ป.1' },
+            'p2': { group: 'p1-p3', badge: 'ป.2' },
+            'p3': { group: 'p1-p3', badge: 'ป.3' },
+            'p4': { group: 'p4-p6', badge: 'ป.4' },
+            'p5': { group: 'p4-p6', badge: 'ป.5' },
+            'p6': { group: 'p4-p6', badge: 'ป.6' },
+            'm1': { group: 'm1-m3', badge: 'ม.1' },
+            'm2': { group: 'm1-m3', badge: 'ม.2' },
+            'm3': { group: 'm1-m3', badge: 'ม.3' },
+            'other': { group: 'other', badge: '' }
+        };
+
+        function renderStaff(list) {
+            const container = document.getElementById('staffContainer');
+            const loading = document.getElementById('loadingState');
+
+            if (loading) loading.style.display = 'none';
+            if (!container) return;
+            container.innerHTML = '';
+
+            if (!list || list.length === 0) {
+                container.innerHTML = '<p class="text-center text-slate-500 py-8 col-span-full">ยังไม่มีข้อมูลบุคลากร</p>';
+                return;
+            }
+
+            // Group staff by display group
+            const grouped = {};
+            list.forEach(s => {
+                const cat = s.category || 'other';
+                const mapping = gradeMapping[cat] || gradeMapping['other'];
+                const groupKey = mapping.group;
+
+                if (!grouped[groupKey]) grouped[groupKey] = [];
+                grouped[groupKey].push({ ...s, badge: mapping.badge });
+            });
+
+            // Render each category in order
+            categoryOrder.forEach(cat => {
+                if (!grouped[cat] || grouped[cat].length === 0) return;
+
+                const catInfo = categoryLabels[cat] || categoryLabels['other'];
+
+                const section = document.createElement('div');
+                section.className = 'staff-category bg-slate-50 rounded-2xl border p-4';
+                section.innerHTML = `
+                    <h3 class="inline-block px-4 py-2 rounded-full ${catInfo.bgColor} ${catInfo.textColor} font-semibold mb-3">
+                      ${catInfo.title}
+                    </h3>
+                    <div class="grid gap-3 staff-grid"></div>
+                `;
+
+                const grid = section.querySelector('.staff-grid');
+                grouped[cat].forEach(s => {
+                    const photoUrl = optimizeCloudinaryUrl(s.photo_url) || 'https://via.placeholder.com/200?text=No+Photo';
+                    const badgeHtml = s.badge ? `<span class="inline-block px-2 py-0.5 rounded-full bg-white text-xs font-medium border ml-2">${s.badge}</span>` : '';
+                    const div = document.createElement('div');
+                    div.className = 'flex items-center gap-4 bg-white rounded-xl p-3 shadow-sm hover:shadow-md transition';
+                    div.innerHTML = `
+                        <img class="h-48 w-48 rounded-full object-cover bg-slate-200 flex-shrink-0 border-4 border-white shadow-lg" 
+                             src="${photoUrl}" 
+                             alt="${s.name}" 
+                             loading="eager"
+                             onerror="this.src='https://via.placeholder.com/200?text=No+Photo'">
+                        <div class="min-w-0 flex-1">
+                            <div class="font-bold text-lg text-brand-800">${s.name}</div>
+                            <div class="text-sm text-slate-600 mt-1">${s.position || ''}${badgeHtml}</div>
+                        </div>
+                    `;
+                    grid.appendChild(div);
+                });
+
+                container.appendChild(section);
+            });
+        }
+
+        // Load staff from Supabase
+        supabase.from('staff').select('*').order('sort_order', { ascending: true })
+            .then(({ data: staffList, error: staffError }) => {
+                if (staffError) throw staffError;
+                renderStaff(staffList);
+            })
+            .catch(e => {
+                console.warn('Staff Error:', e);
+                document.getElementById('loadingState').style.display = 'none';
+                const container = document.getElementById('staffContainer');
+                if (container) container.innerHTML = '<p class="text-center text-red-500 py-8 col-span-full">เกิดข้อผิดพลาดในการโหลดข้อมูล</p>';
+            });
+    </script>
+</body>
+
+</html>

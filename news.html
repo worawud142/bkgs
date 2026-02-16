@@ -64,6 +64,9 @@
         <nav class="hidden md:flex items-center gap-6 text-[15px]">
           <a href="index.html#news" class="hover:text-brand-700">ข่าว/ประกาศ</a>
           <a href="index.html#events" class="hover:text-brand-700">กิจกรรม</a>
+          <a href="gallery.html" class="hover:text-brand-700">แกลเลอรี</a>
+          <a href="staff.html" class="hover:text-brand-700">บุคลากร</a>
+          <a href="awards.html" class="hover:text-brand-700">ผลงาน</a>
           <a href="index.html#contact" class="hover:text-brand-700">ติดต่อ</a>
           <a href="index.html#donate"
             class="inline-flex items-center gap-1.5 bg-brand-600 hover:bg-brand-700 text-white px-3 py-1.5 rounded-full shadow-soft">ร่วมสนับสนุน</a>
@@ -124,7 +127,8 @@
         desc: item.description || item.desc || '',
         content: item.content || '',
         cover: item.cover_image || item.cover || 'https://via.placeholder.com/800x400',
-        coverPosition: item.cover_position || 'center'
+        coverPosition: item.cover_position || 'center',
+        facebookUrl: item.facebook_url || ''
       };
     }
 
@@ -142,36 +146,47 @@
       document.getElementById('title').textContent = data.title;
       document.getElementById('desc').textContent = data.desc;
 
-      // Allow img tags but sanitize other HTML for security
+      // Allow img and div tags but sanitize other HTML for security
       let rawContent = data.content || '';
 
-      // First, unescape any HTML entities for img tags that might have been escaped
-      // This handles cases where &lt;img...&gt; was stored instead of <img...>
+      // First, unescape any HTML entities for img/div tags that might have been escaped
       rawContent = rawContent
         .replace(/&lt;img/gi, '<img')
+        .replace(/&lt;div/gi, '<div')
+        .replace(/&lt;\/div&gt;/gi, '</div>')
         .replace(/&gt;/g, function (match, offset, string) {
-          // Only replace &gt; that are likely part of img tags
-          const before = string.substring(Math.max(0, offset - 200), offset);
-          if (before.includes('<img')) {
+          const before = string.substring(Math.max(0, offset - 300), offset);
+          if (before.includes('<img') || before.includes('<div')) {
             return '>';
           }
           return match;
         });
 
-      // Simple approach: Replace img tags with placeholders, then restore them
-      const imgPlaceholders = [];
-      const imgRegex = /<img[^>]+>/gi;
+      // Extract and store all HTML blocks (div containers and img tags) as placeholders
+      const htmlPlaceholders = [];
 
-      // Extract and store all img tags
-      let processedContent = rawContent.replace(imgRegex, (match) => {
-        const index = imgPlaceholders.length;
-        // Add responsive styling to img tags (avoid duplicate class)
+      // First, extract <div ...>...</div> blocks (flex image grids)
+      let processedContent = rawContent.replace(/<div[^>]*style="display:\s*flex[^"]*"[^>]*>[\s\S]*?<\/div>/gi, (match) => {
+        const index = htmlPlaceholders.length;
+        htmlPlaceholders.push(match);
+        return `__HTML_PLACEHOLDER_${index}__`;
+      });
+
+      // Then extract standalone <img> tags
+      const imgRegex = /<img[^>]+>/gi;
+      processedContent = processedContent.replace(imgRegex, (match) => {
+        const index = htmlPlaceholders.length;
         let styledImg = match;
-        if (!match.includes('class=')) {
+        // If image has inline style (from admin size/align settings), preserve it and only add rounded class
+        if (match.includes('style=')) {
+          if (!match.includes('class=')) {
+            styledImg = match.replace(/<img/i, '<img class="rounded-lg"');
+          }
+        } else if (!match.includes('class=')) {
           styledImg = match.replace(/<img/i, '<img class="max-w-full rounded-lg my-4 mx-auto block"');
         }
-        imgPlaceholders.push(styledImg);
-        return `__IMG_PLACEHOLDER_${index}__`;
+        htmlPlaceholders.push(styledImg);
+        return `__HTML_PLACEHOLDER_${index}__`;
       });
 
       // Format paragraphs (split by double newlines)
@@ -181,11 +196,11 @@
           const trimmed = p.trim();
           if (!trimmed) return '';
           // Check if this paragraph contains only a placeholder
-          if (trimmed.match(/^__IMG_PLACEHOLDER_\d+__$/)) {
+          if (trimmed.match(/^__HTML_PLACEHOLDER_\d+__$/)) {
             return trimmed; // Don't wrap placeholders in <p>
           }
           // Handle inline placeholders within text
-          if (trimmed.includes('__IMG_PLACEHOLDER_')) {
+          if (trimmed.includes('__HTML_PLACEHOLDER_')) {
             return trimmed.replace(/\n/g, '<br>');
           }
           return `<p>${trimmed.replace(/\n/g, '<br>')}</p>`;
@@ -193,9 +208,9 @@
         .filter(p => p)
         .join('\n');
 
-      // Restore img tags from placeholders
-      imgPlaceholders.forEach((img, i) => {
-        processedContent = processedContent.replace(`__IMG_PLACEHOLDER_${i}__`, img);
+      // Restore HTML blocks from placeholders
+      htmlPlaceholders.forEach((html, i) => {
+        processedContent = processedContent.replace(`__HTML_PLACEHOLDER_${i}__`, html);
       });
 
       document.getElementById('content').innerHTML = processedContent;
@@ -205,7 +220,15 @@
       document.getElementById('shareBtn').onclick = async () => {
         try { await navigator.clipboard.writeText(shareUrl); alert('คัดลอกลิงก์แล้ว'); } catch (e) { prompt('คัดลอกลิงก์:', shareUrl); }
       };
-      document.getElementById('fbBtn').href = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(shareUrl);
+
+      // Show Facebook button only if facebook_url is set
+      const fbBtn = document.getElementById('fbBtn');
+      if (data.facebookUrl) {
+        fbBtn.href = data.facebookUrl;
+        fbBtn.style.display = '';
+      } else {
+        fbBtn.style.display = 'none';
+      }
     }
 
     function renderMore(list, currentId) {
